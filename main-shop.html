@@ -1253,12 +1253,6 @@
      JAVASCRIPT
 ═══════════════════════════════════════════════ -->
 <script>
-    /* ─── AUTH GUARD: redirect to login if no session ─── */
-    const _username = sessionStorage.getItem('rc_username');
-    if (!_username) {
-        window.location.href = 'index.html';
-    }
-
     /* ─── SUPABASE ─── */
     const SUPABASE_URL = 'https://wogftjsssxfhktgdfvod.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_9yJg8M-wrRXHMfuDnCtFkA_L3n1Ii36';
@@ -1275,13 +1269,11 @@
     let confirmCallback    = null;
     const isAdmin          = localStorage.getItem('rc_is_admin') === '1';
 
-    /* ─── SET USER NAME ─── */
-    document.getElementById('welcome-name').innerText = _username || '';
+    /* ─── CONSTANT GREETING ─── */
+    document.getElementById('welcome-name').innerText = 'BUDDY';
     if (isAdmin) {
-        document.getElementById('welcome-name').innerText = 'ADMIN';
         const btn = document.getElementById('header-action-btn');
-        if (btn) btn.innerHTML = 'EDIT WEBSITE ✦';
-        /* Update mobile tab label for admin */
+        if (btn) btn.innerHTML = 'ADMIN ✦';
         const tabEditLabel = document.getElementById('tab-edit-label');
         if (tabEditLabel) tabEditLabel.textContent = 'Admin';
         const tabEditIcon = document.getElementById('tab-edit-icon');

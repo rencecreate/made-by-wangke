@@ -8,9 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
 
     <style>
-        /* ─────────────────────────────────────────────
-           ROOT VARIABLES
-        ───────────────────────────────────────────── */
         :root {
             --bg:            #f4f4f4;
             --black:         #000000;
@@ -20,7 +17,6 @@
             --text-muted:    #555555;
             --border:        3px solid var(--black);
             --shadow-sm:     6px 6px 0px var(--black);
-            --shadow-lg:     12px 12px 0px var(--black);
             --shadow-accent: 8px 8px 0px var(--accent);
             --ease:          cubic-bezier(0.175, 0.885, 0.32, 1.275);
             --transition:    all 0.25s var(--ease);
@@ -42,20 +38,16 @@
 
         .hidden { display: none !important; }
 
-        h1, h2, h3, .serif {
+        h2, h3, .serif {
             font-family: 'Fraunces', serif;
             font-style: italic;
             font-weight: 400;
         }
 
-        /* ─────────────────────────────────────────────
-           FIXED HEADER
-        ───────────────────────────────────────────── */
+        /* ─── FIXED HEADER ─── */
         header {
             position: fixed;
-            top: 16px;
-            left: 16px;
-            right: 16px;
+            top: 16px; left: 16px; right: 16px;
             z-index: 500;
             display: flex;
             justify-content: space-between;
@@ -79,9 +71,7 @@
 
         .header-right { display: flex; align-items: center; gap: 12px; }
 
-        /* ─────────────────────────────────────────────
-           INPUTS & BUTTONS
-        ───────────────────────────────────────────── */
+        /* ─── INPUTS & BUTTONS ─── */
         input, textarea, select {
             width: 100%;
             padding: 11px 14px;
@@ -142,6 +132,7 @@
             text-decoration: none;
             display: inline-block;
         }
+
         .cart-btn:hover {
             background: var(--accent);
             color: var(--black);
@@ -149,9 +140,44 @@
             box-shadow: 4px 4px 0px var(--black);
         }
 
-        /* ─────────────────────────────────────────────
-           ADMIN DASHBOARD
-        ───────────────────────────────────────────── */
+        /* ─── SECTION TABS ─── */
+        .section-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: var(--border);
+            margin-bottom: 32px;
+        }
+
+        .section-tab {
+            flex: 1;
+            padding: 16px 12px;
+            background: var(--white);
+            border: none;
+            border-right: 2px solid var(--black);
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            text-align: center;
+        }
+
+        .section-tab:last-child { border-right: none; }
+        .section-tab:hover { background: var(--bg); color: var(--black); transform: none; box-shadow: none; }
+        .section-tab.active {
+            background: var(--black);
+            color: var(--accent);
+            transform: none;
+            box-shadow: none;
+        }
+
+        .section-panel { display: none; }
+        .section-panel.active { display: block; }
+
+        /* ─── ADMIN DASHBOARD CONTAINER ─── */
         #admin-page {
             max-width: 1140px;
             margin: 40px auto;
@@ -169,14 +195,187 @@
             gap: 12px;
         }
 
-        .admin-header h2 {
-            font-family: 'Fraunces', serif;
-            font-style: italic;
-            font-size: 2rem;
-        }
-
+        .admin-header h2 { font-size: 2rem; }
         .admin-header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
+        /* ─── PANEL CARD ─── */
+        .admin-panel {
+            background: var(--white);
+            border: var(--border);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            font-size: 0.55rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* ─── UPLOAD AREA ─── */
+        .upload-zone {
+            border: 2px dashed var(--black);
+            background: var(--bg);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .upload-label {
+            font-size: 0.55rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar-wrap {
+            height: 6px;
+            background: var(--grey);
+            border: 1px solid var(--black);
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* ─── IMAGE PREVIEW STRIP ─── */
+        .img-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .img-strip-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border: 2px solid var(--black);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .img-strip-item img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        .img-strip-del {
+            position: absolute;
+            top: 2px; right: 2px;
+            width: 20px; height: 20px;
+            background: var(--black);
+            color: var(--accent);
+            border: none;
+            font-size: 0.7rem;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            padding: 0;
+            transition: background 0.15s;
+        }
+
+        .img-strip-del:hover { background: var(--danger); color: var(--white); transform: none; box-shadow: none; }
+
+        /* ─── WALL LINK LIST ─── */
+        .wall-link-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--bg);
+            border: 1px solid var(--grey);
+            margin-bottom: 8px;
+        }
+
+        .wall-link-url {
+            flex: 1;
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ─── GALLERY ADMIN TABLE ─── */
+        .gallery-admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+        }
+
+        .gallery-admin-card {
+            position: relative;
+            border: 2px solid var(--black);
+            background: var(--white);
+            overflow: hidden;
+        }
+
+        .gallery-admin-thumb {
+            aspect-ratio: 1 / 1;
+            background: var(--grey);
+            overflow: hidden;
+        }
+
+        .gallery-admin-thumb img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-admin-info {
+            padding: 8px 10px;
+        }
+
+        .gallery-admin-info .card-title {
+            font-size: 0.6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .gallery-admin-info .card-cat {
+            font-size: 0.52rem;
+            color: var(--text-muted);
+        }
+
+        .gallery-admin-actions {
+            display: flex;
+            gap: 4px;
+            padding: 6px 10px 10px;
+        }
+
+        .gallery-admin-actions button {
+            flex: 1;
+            padding: 6px 8px;
+            font-size: 0.52rem;
+        }
+
+        /* ─── SHOP AREA ─── */
         .admin-controls {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -184,23 +383,6 @@
             margin-bottom: 28px;
         }
 
-        .admin-panel {
-            background: var(--white);
-            border: var(--border);
-            padding: 20px;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .admin-panel h4 {
-            font-size: 0.6rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-muted);
-            margin-bottom: 14px;
-        }
-
-        /* Shop Status toggle */
         .shop-status-panel {
             background: var(--white);
             border: var(--border);
@@ -232,8 +414,7 @@
 
         .toggle-switch {
             position: relative;
-            width: 56px;
-            height: 28px;
+            width: 56px; height: 28px;
             background: var(--grey);
             border: 2px solid var(--black);
             cursor: pointer;
@@ -244,10 +425,8 @@
         .toggle-switch::after {
             content: '';
             position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
+            top: 2px; left: 2px;
+            width: 20px; height: 20px;
             background: var(--black);
             transition: transform 0.2s ease;
         }
@@ -255,26 +434,14 @@
         .toggle-switch.on { background: var(--accent); }
         .toggle-switch.on::after { transform: translateX(28px); }
 
-        .toggle-status-text {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
+        .toggle-status-text { font-weight: 900; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
         .toggle-status-text.open  { color: var(--accent); }
         .toggle-status-text.closed { color: var(--danger); }
 
-        .admin-shop-area {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
+        .admin-shop-area { display: flex; gap: 20px; align-items: flex-start; }
 
         .admin-sidebar {
-            width: 200px;
-            flex-shrink: 0;
+            width: 200px; flex-shrink: 0;
             border: var(--border);
             background: var(--white);
             box-shadow: var(--shadow-sm);
@@ -282,30 +449,23 @@
         }
 
         .admin-sidebar-title {
-            font-size: 0.55rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            font-size: 0.55rem; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 2px;
             color: var(--text-muted);
             padding: 14px 16px 10px;
             border-bottom: 2px solid var(--black);
         }
 
         .admin-folder-btn {
-            display: block;
-            width: 100%;
+            display: block; width: 100%;
             text-align: left;
             padding: 12px 16px;
             background: transparent;
-            border: none;
-            border-bottom: 1px solid var(--grey);
+            border: none; border-bottom: 1px solid var(--grey);
             font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            color: var(--black);
-            cursor: pointer;
-            transition: background 0.15s;
+            font-weight: 900; font-size: 0.65rem;
+            text-transform: uppercase; color: var(--black);
+            cursor: pointer; transition: background 0.15s;
         }
 
         .admin-folder-btn:hover { background: var(--bg); transform: none; box-shadow: none; color: var(--black); }
@@ -316,123 +476,73 @@
             border: var(--border);
             background: var(--white);
             box-shadow: var(--shadow-sm);
-            overflow: hidden;
-            overflow-x: auto;
+            overflow: hidden; overflow-x: auto;
         }
 
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 400px;
-        }
-
+        .admin-table { width: 100%; border-collapse: collapse; min-width: 400px; }
         .admin-table thead tr { background: var(--black); color: var(--white); }
-
         .admin-table thead th {
-            text-align: left;
-            font-size: 0.55rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+            text-align: left; font-size: 0.55rem;
+            font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px;
             padding: 12px 16px;
         }
-
         .admin-table tbody tr { border-bottom: 1px solid var(--grey); transition: background 0.15s; }
         .admin-table tbody tr:hover { background: var(--bg); }
-
-        .admin-table td {
-            padding: 12px 16px;
-            font-size: 0.7rem;
-            vertical-align: middle;
-        }
-
+        .admin-table td { padding: 12px 16px; font-size: 0.7rem; vertical-align: middle; }
         .admin-table .prod-name { font-weight: 900; text-transform: uppercase; }
         .admin-table .prod-sub  { font-size: 0.6rem; color: var(--text-muted); margin-top: 2px; }
 
         .badge-live {
-            background: var(--accent);
-            color: var(--black);
-            border: 2px solid var(--black);
-            padding: 4px 12px;
-            font-size: 0.6rem;
-            font-weight: 900;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: var(--transition);
+            background: var(--accent); color: var(--black);
+            border: 2px solid var(--black); padding: 4px 12px;
+            font-size: 0.6rem; font-weight: 900; cursor: pointer;
+            text-transform: uppercase; transition: var(--transition);
         }
 
         .badge-off {
-            background: var(--grey);
-            color: #777;
-            border: 2px solid #bbb;
-            padding: 4px 12px;
-            font-size: 0.6rem;
-            font-weight: 900;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: var(--transition);
+            background: var(--grey); color: #777;
+            border: 2px solid #bbb; padding: 4px 12px;
+            font-size: 0.6rem; font-weight: 900; cursor: pointer;
+            text-transform: uppercase; transition: var(--transition);
         }
 
-        .badge-live:hover, .badge-off:hover { transform: translate(-2px, -2px); box-shadow: 3px 3px 0px var(--black); }
+        .badge-live:hover, .badge-off:hover { transform: translate(-2px,-2px); box-shadow: 3px 3px 0px var(--black); }
 
         .admin-edit-btn {
-            background: transparent;
-            border: 2px solid var(--black);
-            color: var(--black);
-            padding: 5px 14px;
-            font-size: 0.6rem;
+            background: transparent; border: 2px solid var(--black);
+            color: var(--black); padding: 5px 14px; font-size: 0.6rem;
         }
 
         .admin-edit-btn:hover { background: var(--black); color: var(--accent); transform: translate(-2px,-2px); box-shadow: 3px 3px 0px var(--accent); }
+        .admin-table-empty { padding: 48px; text-align: center; font-size: 0.7rem; color: var(--text-muted); font-style: italic; font-family: 'Fraunces', serif; }
 
-        .admin-table-empty {
-            padding: 48px;
-            text-align: center;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            font-style: italic;
-            font-family: 'Fraunces', serif;
-        }
-
-        /* Category Manager */
+        /* ─── CAT MANAGER ─── */
         .cat-manager-item { border-top: 2px solid var(--grey); padding: 16px 0; }
         .cat-manager-item:first-child { border-top: none; }
-
         .cat-manager-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .cat-folder-name { font-size: 0.75rem; font-weight: 900; text-transform: uppercase; }
-
         .btn-del-folder { background: none; border: 1px solid var(--danger); color: var(--danger); font-size: 0.6rem; padding: 4px 10px; cursor: pointer; transition: var(--transition); }
         .btn-del-folder:hover { background: var(--danger); color: var(--white); transform: translate(-2px,-2px); box-shadow: 3px 3px 0px var(--black); }
-
         .sub-tags-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-left: 16px; margin-bottom: 10px; }
-
         .sub-tag { background: var(--accent); border: 1px solid var(--black); padding: 4px 10px; font-size: 0.6rem; font-weight: 900; display: flex; align-items: center; gap: 6px; }
         .sub-tag-del { cursor: pointer; font-weight: 900; color: var(--black); line-height: 1; }
-
         .sub-add-row { display: flex; gap: 8px; margin-left: 16px; }
         .sub-add-row input { font-size: 0.65rem; padding: 7px 10px; margin: 0; flex: 1; }
         .sub-add-row button { font-size: 0.6rem; padding: 7px 14px; flex-shrink: 0; }
 
-        /* Modal */
+        /* ─── MODALS ─── */
         .modal-overlay {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background: rgba(0,0,0,0.87);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-            overflow-y: auto;
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; padding: 20px; overflow-y: auto;
         }
 
         .modal-card {
             background: var(--white);
             border: var(--border);
-            width: 100%;
-            max-width: 460px;
+            width: 100%; max-width: 460px;
             padding: 32px;
             box-shadow: 14px 14px 0px var(--accent);
             position: relative;
@@ -440,327 +550,155 @@
             overflow-y: auto;
         }
 
-        /* ── Confirm dialog gets highest z-index — always on top ── */
-        #confirm-panel {
-            z-index: 1100 !important;
-        }
-
+        #confirm-panel { z-index: 1100 !important; }
         .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
         .modal-actions button { flex: 1; }
 
-        /* Upload sections */
-        .upload-section-label {
-            font-size: 0.55rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-muted);
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .upload-section {
-            margin-bottom: 16px;
-            padding: 14px;
-            border: 2px dashed var(--black);
-            background: var(--bg);
-        }
+        .upload-section { margin-bottom: 16px; padding: 14px; border: 2px dashed var(--black); background: var(--bg); }
+        .upload-section-label { font-size: 0.55rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); display: block; margin-bottom: 8px; }
 
         #icon-preview-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
 
         .icon-slot {
-            position: relative;
-            width: 80px; height: 80px;
-            border: var(--border);
-            background: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.55rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            overflow: hidden;
-            flex-shrink: 0;
+            position: relative; width: 80px; height: 80px;
+            border: var(--border); background: var(--white);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.55rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);
+            overflow: hidden; flex-shrink: 0;
         }
         .icon-slot img { width: 100%; height: 100%; object-fit: cover; }
 
-        .display-slots-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 8px;
-        }
+        .display-slots-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 8px; }
 
         .img-slot {
-            position: relative;
-            aspect-ratio: 1 / 1;
-            border: 2px solid var(--black);
-            background: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.5rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            overflow: hidden;
+            position: relative; aspect-ratio: 1/1;
+            border: 2px solid var(--black); background: var(--white);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--text-muted); overflow: hidden;
         }
+
         .img-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
         .img-slot-del {
-            position: absolute;
-            top: 3px; right: 3px;
+            position: absolute; top: 3px; right: 3px;
             width: 22px; height: 22px;
-            background: var(--black);
-            color: var(--accent);
-            border: none;
-            font-size: 0.8rem;
-            font-weight: 900;
-            line-height: 1;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 5;
-            padding: 0;
-            transition: background 0.15s, color 0.15s;
+            background: var(--black); color: var(--accent);
+            border: none; font-size: 0.8rem; font-weight: 900; line-height: 1;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            z-index: 5; padding: 0; transition: background 0.15s, color 0.15s;
         }
         .img-slot-del:hover { background: var(--danger); color: var(--white); transform: none; box-shadow: none; }
 
         #upload-progress-wrap { height: 6px; background: var(--grey); border: 1px solid var(--black); margin-bottom: 8px; overflow: hidden; }
         #upload-progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease; }
 
-        /* Toast */
+        /* ─── TOAST ─── */
         #custom-alert {
-            position: fixed;
-            bottom: 32px;
-            right: 24px;
-            background: var(--black);
-            color: var(--white);
-            padding: 14px 22px;
-            border: 2px solid var(--accent);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transform: translateY(calc(100% + 60px));
-            opacity: 0;
-            pointer-events: none;
+            position: fixed; bottom: 32px; right: 24px;
+            background: var(--black); color: var(--white);
+            padding: 14px 22px; border: 2px solid var(--accent);
+            display: flex; align-items: center; gap: 12px;
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            transform: translateY(calc(100% + 60px)); opacity: 0; pointer-events: none;
             transition: transform 0.45s var(--ease), opacity 0.45s ease;
-            z-index: 9999;
-            box-shadow: 5px 5px 0px var(--accent);
-            max-width: 320px;
+            z-index: 9999; box-shadow: 5px 5px 0px var(--accent); max-width: 320px;
         }
         #custom-alert.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
 
-        /* ══════════════════════════════════════════════════════════════
-           MOBILE — admin-panel.html
-           All rules inside @media (max-width: 767px) — desktop untouched
-        ══════════════════════════════════════════════════════════════ */
-
-        /* Tab bar: hidden on desktop */
         #mobile-tab-bar { display: none; }
 
+        /* ─── MOBILE ─── */
         @media (max-width: 767px) {
-
             :root {
-                --tab-h:    64px;
+                --tab-h: 64px;
                 --tab-safe: max(env(safe-area-inset-bottom, 0px), 8px);
-                --tab-tot:  calc(var(--tab-h) + var(--tab-safe));
+                --tab-tot: calc(var(--tab-h) + var(--tab-safe));
             }
 
             html, body { -webkit-overflow-scrolling: touch; }
             *, *::before, *::after { box-sizing: border-box; }
-
-            body {
-                padding-top: 0 !important;
-                padding-bottom: var(--tab-tot) !important;
-            }
+            body { padding-top: 0 !important; padding-bottom: var(--tab-tot) !important; }
 
             a, button, [role="button"] {
                 -webkit-touch-callout: none;
                 -webkit-tap-highlight-color: rgba(0,255,102,0.18);
             }
 
-            /* ── HIDE desktop header ── */
             header { display: none !important; }
 
-            /* ── FIXED BOTTOM TAB BAR ── */
             #mobile-tab-bar {
                 display: flex !important;
-                position: fixed;
-                bottom: 0; left: 0; right: 0;
+                position: fixed; bottom: 0; left: 0; right: 0;
                 z-index: 900;
                 height: var(--tab-tot);
                 padding-bottom: var(--tab-safe);
-                background: rgba(255,255,255,0.97);
-                backdrop-filter: blur(20px) saturate(180%);
-                -webkit-backdrop-filter: blur(20px) saturate(180%);
+                background: var(--white);
                 border-top: 3px solid var(--black);
-                box-shadow: 0 -4px 0 var(--black);
-                align-items: stretch;
-            }
-            #mobile-tab-bar .tab-item {
-                flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-                gap: 3px; text-decoration: none; color: var(--black);
-                font-family: 'Unbounded', sans-serif; font-size: 0.48rem; font-weight: 700;
-                text-transform: uppercase; letter-spacing: 0.3px;
-                cursor: pointer; background: transparent; border: none; padding: 0;
-                min-height: 44px; position: relative;
-                transition: color 0.15s ease, background 0.15s ease;
-                -webkit-tap-highlight-color: transparent;
-            }
-            #mobile-tab-bar .tab-item .tab-icon { font-size: 1.3rem; line-height: 1; display: block; transition: transform 0.18s ease; }
-            #mobile-tab-bar .tab-item .tab-label { display: block; line-height: 1; }
-            #mobile-tab-bar .tab-item.active::after { content: ''; position: absolute; top: 0; left: 20%; right: 20%; height: 3px; background: var(--accent); }
-            #mobile-tab-bar .tab-item.active .tab-icon { transform: translateY(-2px) scale(1.12); }
-            #mobile-tab-bar .tab-item:active { background: rgba(0,255,102,0.12); }
-
-            /* ── TOUCH INTERACTIONS ── */
-            button:hover { transform: none; box-shadow: none; }
-            button:active { transform: translate(-2px,-2px); box-shadow: 3px 3px 0px var(--accent); background: var(--accent); color: var(--black); transition: transform 0.08s ease; }
-            button.btn-ghost:active { background: var(--grey); color: var(--black); box-shadow: 3px 3px 0px var(--black); }
-            /* btn-danger keeps its red color on active — don't override with accent */
-            button.btn-danger { background: var(--danger) !important; color: var(--white) !important; }
-            button.btn-danger:active { background: #c00 !important; color: var(--white) !important; transform: translate(-2px,-2px); box-shadow: 3px 3px 0px rgba(0,0,0,0.3); }
-            button.btn-success:active { background: var(--accent); color: var(--black); }
-            .admin-folder-btn:hover { background: var(--bg); transform: none; box-shadow: none; color: var(--black); }
-            .admin-folder-btn:active { background: var(--black); color: var(--accent); }
-            .badge-live:hover, .badge-off:hover { transform: none; box-shadow: none; }
-            .badge-live:active, .badge-off:active { transform: translate(-2px,-2px); box-shadow: 3px 3px 0px var(--black); }
-            .admin-edit-btn:hover { background: transparent; color: var(--black); transform: none; box-shadow: none; }
-            .admin-edit-btn:active { background: var(--black); color: var(--accent); transform: translate(-2px,-2px); }
-
-            /* ── 44px TAP TARGETS ── */
-            button, a { min-height: 44px; }
-            input:not([type="file"]):not([type="checkbox"]), textarea, select { min-height: 44px; font-size: 16px !important; }
-            input[type="file"] { min-height: 44px; padding: 10px 0; }
-            .admin-folder-btn { min-height: 44px; }
-            .badge-live, .badge-off { min-height: 40px; display: inline-flex; align-items: center; }
-            .admin-edit-btn { min-height: 40px; display: inline-flex; align-items: center; }
-            .toggle-track { min-height: 44px; }
-
-            /* ── ADMIN PAGE LAYOUT ── */
-            #admin-page { padding: 24px 12px; margin: 0 auto; }
-
-            /* Admin header: stack vertically */
-            .admin-header { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
-            .admin-header h2 { font-size: 1.6rem; }
-
-            /* Action buttons: 2-column grid */
-            .admin-header-actions {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-                width: 100%;
-            }
-            .admin-header-actions button { width: 100%; white-space: nowrap; font-size: 0.58rem; padding: 12px 8px; min-height: 44px; }
-
-            /* Shop status panel: stack */
-            .shop-status-panel { flex-direction: column; gap: 16px; padding: 16px; }
-
-            /* Controls grid: 1-col */
-            .admin-controls { grid-template-columns: 1fr; gap: 12px; margin-bottom: 20px; }
-
-            /* Shop area: sidebar above table */
-            .admin-shop-area { flex-direction: column; gap: 0; }
-
-            /* Sidebar: horizontal scrollable pill row */
-            .admin-sidebar {
-                width: 100%; border-right: none; border-bottom: var(--border);
-                padding: 0 0 12px; margin-bottom: 16px;
-                min-width: unset; max-width: 100%;
-            }
-            .admin-sidebar-title { padding: 12px 0 8px; }
-
-            .admin-sidebar-buttons {
-                display: flex; flex-wrap: nowrap;
-                overflow-x: auto; -webkit-overflow-scrolling: touch;
-                gap: 0; scrollbar-width: none; -ms-overflow-style: none;
-            }
-            .admin-sidebar-buttons::-webkit-scrollbar { display: none; }
-            .admin-folder-btn { white-space: nowrap; border-right: 1px solid var(--grey); border-bottom: none; padding: 12px 16px; }
-
-            /* Table: card-based layout on mobile */
-            .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-            .admin-table { font-size: 0.65rem; min-width: unset; }
-            .admin-table thead { display: none; }
-            .admin-table tbody tr {
-                display: block; border: 2px solid var(--black);
-                margin-bottom: 12px; padding: 12px; background: var(--white);
-            }
-            .admin-table td {
-                display: block; padding: 4px 0; border: none; text-align: left !important;
+                overflow: hidden;
             }
 
-            /* ── MODALS: bottom-sheet style ── */
-            .modal-overlay {
-                padding: 0; align-items: flex-end;
-                overflow-y: auto; overscroll-behavior: contain;
-                -webkit-overflow-scrolling: touch;
-                /* NOTE: no 'contain' here — it creates a stacking context that
-                   traps child overlays like #confirm-panel below them */
+            .tab-item {
+                flex: 1;
+                display: flex; flex-direction: column; align-items: center; justify-content: center;
+                gap: 4px; text-decoration: none; color: var(--text-muted);
+                font-family: 'Unbounded', sans-serif; font-size: 0.42rem; font-weight: 900;
+                text-transform: uppercase; letter-spacing: 0.5px;
+                transition: color 0.15s, background 0.15s;
+                border-right: 1px solid var(--grey);
+                background: none; border-top: none; border-bottom: none;
+                padding-bottom: var(--tab-safe);
             }
 
-            /* Confirm panel must always be on top of other modals */
-            #confirm-panel {
-                align-items: center;
-                z-index: 1100 !important;
-            }
+            .tab-item:last-child { border-right: none; }
+            .tab-item.active { color: var(--black); background: var(--accent); transform: none; box-shadow: none; }
+            .tab-icon { font-size: 1.1rem; line-height: 1; }
+            .tab-label { font-size: 0.4rem; }
 
+            #admin-page { padding: 16px 12px; }
+            .admin-header { margin-bottom: 16px; }
+            .admin-header h2 { font-size: 1.4rem; }
+            .admin-header-actions { display: none; }
+
+            .section-tabs { overflow-x: auto; }
+            .section-tab { padding: 12px 8px; font-size: 0.52rem; }
+
+            .two-col { grid-template-columns: 1fr; }
+            .admin-controls { grid-template-columns: 1fr; }
+
+            .admin-shop-area { flex-direction: column; }
+            .admin-sidebar { width: 100%; }
+
+            .gallery-admin-grid { grid-template-columns: repeat(2, 1fr); }
+
+            .modal-overlay { padding: 0; align-items: flex-end; }
             .modal-card {
                 width: 100% !important; max-width: 100% !important;
-                min-width: 0; padding: 24px 18px;
+                padding: 24px 18px;
                 border-radius: 16px 16px 0 0 !important;
                 border-bottom: none !important;
-                max-height: 88vh; overflow-y: auto; overflow-x: hidden;
-                -webkit-overflow-scrolling: touch;
-                box-shadow: 0 -5px 0 var(--accent); margin: 0;
+                max-height: 88vh; overflow-y: auto;
+                box-shadow: 0 -5px 0 var(--accent);
             }
-
-            /* Drag handle hint */
             .modal-card::before {
                 content: ''; display: block;
                 width: 36px; height: 4px; background: var(--grey);
-                border-radius: 2px; margin: 0 auto 18px;
+                margin: 0 auto 18px;
             }
 
-            .modal-actions { flex-direction: column; gap: 10px; margin-top: 16px; }
-            .modal-actions button { width: 100%; flex: none; padding: 14px 16px; min-height: 44px; }
-
-            /* Confirm dialog */
-            #confirm-standard-btns { flex-direction: column; gap: 10px; }
-            #confirm-standard-btns button { width: 100%; min-height: 44px; }
-
-            /* Upload inputs */
-            .upload-section input[type="file"] { width: 100%; box-sizing: border-box; }
-            .modal-card input, .modal-card textarea, .modal-card select { width: 100%; box-sizing: border-box; }
-            .display-slots-grid { grid-template-columns: repeat(4, 1fr); }
-
-            /* Toast: above tab bar */
             #custom-alert { bottom: calc(var(--tab-tot) + 12px); right: 12px; left: 12px; max-width: none; }
-        }
-
-        @media (max-width: 480px) {
-            .admin-header h2 { font-size: 1.4rem; }
-            .admin-header-actions { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-<!-- ── Toast ── -->
+<!-- Toast -->
 <div id="custom-alert">
     <span id="alert-icon">✨</span>
     <span id="alert-text">Action Successful</span>
 </div>
 
-<!-- ── Confirm Dialog ── -->
+<!-- Confirm Dialog -->
 <div id="confirm-panel" class="modal-overlay hidden">
     <div class="modal-card">
         <p id="confirm-msg" style="font-size:0.85rem; font-weight:700; margin-bottom:24px; line-height:1.5;"></p>
@@ -771,35 +709,28 @@
     </div>
 </div>
 
-<!-- ── Admin Product Modal ── -->
+<!-- Product Modal (Shop) -->
 <div id="admin-modal" class="modal-overlay hidden">
     <div class="modal-card">
-        <h2 id="modal-header-text" style="font-family:'Fraunces',serif; font-style:italic; margin-bottom:20px;">Product Panel</h2>
+        <h2 id="modal-header-text" style="margin-bottom:20px;">Product Panel</h2>
 
         <div class="upload-section">
             <span class="upload-section-label">① Product Icon — single square image</span>
             <div id="icon-preview-wrap">
                 <div class="img-slot icon-slot" id="icon-slot" style="width:80px;height:80px;flex-shrink:0;">Empty</div>
                 <div>
-                    <input type="file" id="icon-upload" accept="image/*"
-                           style="font-size:0.62rem; margin:0 0 6px;">
-                    <p style="font-size:0.55rem; color:var(--text-muted); margin:0; line-height:1.5;">
-                        Shown on the shop grid (1:1 square)
-                    </p>
+                    <input type="file" id="icon-upload" accept="image/*" style="font-size:0.62rem; margin:0 0 6px;">
+                    <p style="font-size:0.55rem; color:var(--text-muted); margin:0; line-height:1.5;">Shown on the shop grid (1:1 square)</p>
                 </div>
             </div>
         </div>
 
         <div class="upload-section">
-            <span class="upload-section-label">② Display Images — up to 4 (shown in product viewer)</span>
+            <span class="upload-section-label">② Display Images — up to 4</span>
             <div class="display-slots-grid" id="display-slots-grid"></div>
-            <input type="file" id="display-upload" accept="image/*" multiple
-                   style="font-size:0.62rem; margin:0 0 6px;">
-            <div id="upload-progress-wrap" class="hidden">
-                <div id="upload-progress-bar"></div>
-            </div>
-            <p id="upload-status-text" class="hidden"
-               style="font-size:0.6rem; color:var(--text-muted); margin:4px 0 0;">Processing...</p>
+            <input type="file" id="display-upload" accept="image/*" multiple style="font-size:0.62rem; margin:0 0 6px;">
+            <div id="upload-progress-wrap" class="hidden"><div id="upload-progress-bar"></div></div>
+            <p id="upload-status-text" class="hidden" style="font-size:0.6rem; color:var(--text-muted); margin:4px 0 0;">Processing...</p>
         </div>
 
         <input type="text"   id="p-title" placeholder="Product Title">
@@ -813,10 +744,35 @@
     </div>
 </div>
 
-<!-- ── Category Manager Modal ── -->
+<!-- Gallery Post Modal -->
+<div id="gallery-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+        <h2 id="gallery-modal-title" style="margin-bottom:20px;">Upload Gallery Post</h2>
+        <div class="upload-section">
+            <span class="upload-section-label">Image</span>
+            <div id="gallery-img-preview" style="aspect-ratio:1;width:100%;background:var(--grey);margin-bottom:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                <img id="gallery-preview-img" src="" alt="" class="hidden" style="width:100%;height:100%;object-fit:cover;">
+                <span id="gallery-preview-label" style="font-size:0.7rem;color:var(--text-muted);">Preview</span>
+            </div>
+            <input type="file" id="gallery-img-input" accept="image/*" style="font-size:0.62rem; margin:0;">
+            <div class="progress-bar-wrap hidden" id="gallery-progress-wrap">
+                <div class="progress-bar-inner" id="gallery-progress-bar"></div>
+            </div>
+        </div>
+        <input type="text" id="gallery-title" placeholder="Title *">
+        <textarea id="gallery-short-desc" placeholder="Short description (shown on hover)" style="height:60px;resize:vertical;"></textarea>
+        <input type="text" id="gallery-category" placeholder="Category (e.g. Prints, Originals)">
+        <div class="modal-actions">
+            <button onclick="submitGalleryPost()" style="flex:2;">Publish ✦</button>
+            <button onclick="closeModals()" class="btn-ghost" style="flex:1;">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Category Manager Modal (Shop) -->
 <div id="cat-manager-modal" class="modal-overlay hidden">
     <div class="modal-card" style="max-width:560px;">
-        <h2 style="font-family:'Fraunces',serif; font-style:italic; margin-bottom:20px;">Folder Manager</h2>
+        <h2 style="margin-bottom:20px;">Folder Manager</h2>
         <div style="display:flex; gap:10px; margin-bottom:20px;">
             <input type="text" id="mgr-new-cat" placeholder="New folder name..." style="flex:1; margin:0;">
             <button onclick="mgrAddFolder()">+ Folder</button>
@@ -829,121 +785,250 @@
 </div>
 
 
-<!-- ═══════════════════════════════════════════════
-     FIXED HEADER
-═══════════════════════════════════════════════ -->
+<!-- ═══════════ FIXED HEADER ═══════════ -->
 <header>
-    <a href="main-shop.html" class="logo">RENCE CREATE</a>
+    <span class="logo">RENCE CREATE — ADMIN</span>
     <div class="header-right">
-        <a href="main-shop.html" class="cart-btn" style="text-decoration:none;">← SHOP</a>
+        <a href="index.html" class="cart-btn" style="text-decoration:none;">← HOME</a>
+        <button onclick="logout()" class="btn-danger" style="padding:10px 18px;">Logout</button>
     </div>
 </header>
 
 
-<!-- ═══════════════════════════════════════════════
-     ADMIN DASHBOARD
-═══════════════════════════════════════════════ -->
+<!-- ═══════════ ADMIN DASHBOARD ═══════════ -->
 <div id="admin-page">
 
     <div class="admin-header">
         <h2>Admin Dashboard</h2>
         <div class="admin-header-actions">
-            <button onclick="openCatManager()">Folders</button>
-            <button onclick="openAdminModal()" style="background:#333;">+ Product</button>
-            <button onclick="saveAdminChanges()" class="btn-success">Save Changes</button>
+            <button onclick="saveAllChanges()" class="btn-success">Save All Changes</button>
             <button onclick="logout()" class="btn-danger">Logout</button>
         </div>
     </div>
 
-    <!-- Shop Status Control Panel -->
-    <div class="shop-status-panel">
-        <div>
-            <div class="status-label">Shop Status</div>
-            <div class="toggle-track" onclick="toggleShopStatus()">
-                <div class="toggle-switch" id="status-toggle"></div>
-                <span class="toggle-status-text" id="status-toggle-label">OPEN</span>
+    <!-- THREE SECTION TABS -->
+    <div class="section-tabs">
+        <button class="section-tab active" onclick="switchSection('frontpage', this)">① Front Page</button>
+        <button class="section-tab" onclick="switchSection('gallery-mgmt', this)">② Gallery</button>
+        <button class="section-tab" onclick="switchSection('shop-mgmt', this)">③ Shop</button>
+    </div>
+
+    <!-- ──────────────────────────────────────
+         SECTION 1: FRONT PAGE MANAGEMENT
+    ────────────────────────────────────────── -->
+    <div class="section-panel active" id="panel-frontpage">
+
+        <!-- Header Image -->
+        <div class="admin-panel">
+            <div class="panel-title">Hero Header Image (editable background behind navbar)</div>
+            <div class="upload-zone">
+                <span class="upload-label">Upload Hero Background Image</span>
+                <div id="hero-bg-preview" style="width:100%;height:120px;background:var(--grey);overflow:hidden;margin-bottom:8px;display:flex;align-items:center;justify-content:center;">
+                    <img id="hero-bg-preview-img" src="" alt="" class="hidden" style="width:100%;height:100%;object-fit:cover;">
+                    <span id="hero-bg-placeholder-label">No image yet</span>
+                </div>
+                <input type="file" id="hero-bg-input" accept="image/*" style="font-size:0.62rem;">
+                <div class="progress-bar-wrap hidden" id="hero-bg-progress-wrap">
+                    <div class="progress-bar-inner" id="hero-bg-progress-bar"></div>
+                </div>
             </div>
         </div>
-        <div style="flex:1; min-width:260px;">
-            <div class="status-label">Closed Shop Message</div>
-            <textarea id="closed-msg-input" placeholder="e.g. We're restocking! Back on Friday. ♡" style="height:72px; resize:vertical; font-size:0.7rem; margin:0;"></textarea>
-        </div>
-    </div>
 
-    <div class="admin-shop-area">
-        <!-- Folder sidebar -->
-        <div class="admin-sidebar">
-            <div class="admin-sidebar-title">Folders</div>
-            <div class="admin-sidebar-buttons" id="admin-sidebar"></div>
+        <!-- Character Image -->
+        <div class="admin-panel">
+            <div class="panel-title">Buddy / Character Image (mascot on landing page)</div>
+            <div class="upload-zone">
+                <span class="upload-label">Upload Character PNG (transparent background recommended)</span>
+                <div id="char-preview" style="width:100%;height:180px;background:var(--grey);overflow:hidden;margin-bottom:8px;display:flex;align-items:center;justify-content:center;">
+                    <img id="char-preview-img" src="" alt="" class="hidden" style="max-height:170px;max-width:100%;object-fit:contain;">
+                    <span id="char-preview-placeholder">No character image yet</span>
+                </div>
+                <input type="file" id="char-input" accept="image/*" style="font-size:0.62rem;">
+                <div class="progress-bar-wrap hidden" id="char-progress-wrap">
+                    <div class="progress-bar-inner" id="char-progress-bar"></div>
+                </div>
+            </div>
         </div>
 
-        <!-- Product table -->
-        <div class="admin-table-wrap">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="admin-list"></tbody>
-            </table>
+        <!-- Social Links -->
+        <div class="admin-panel">
+            <div class="panel-title">Social Media Links</div>
+            <div class="two-col">
+                <div>
+                    <label class="upload-label">TikTok URL</label>
+                    <input type="url" id="social-tiktok" placeholder="https://tiktok.com/@yourhandle">
+                </div>
+                <div>
+                    <label class="upload-label">Instagram URL</label>
+                    <input type="url" id="social-instagram" placeholder="https://instagram.com/yourhandle">
+                </div>
+                <div>
+                    <label class="upload-label">Facebook URL</label>
+                    <input type="url" id="social-facebook" placeholder="https://facebook.com/yourpage">
+                </div>
+                <div>
+                    <label class="upload-label">X (Twitter) URL</label>
+                    <input type="url" id="social-twitter" placeholder="https://x.com/yourhandle">
+                </div>
+            </div>
         </div>
-    </div>
+
+        <!-- Board Images (Carousel) -->
+        <div class="admin-panel">
+            <div class="panel-title">The Board — Carousel Images (16:9 ratio recommended)</div>
+            <div class="upload-zone">
+                <span class="upload-label">Upload slide images (can select multiple)</span>
+                <input type="file" id="board-input" accept="image/*" multiple style="font-size:0.62rem; margin-bottom:8px;">
+                <div class="progress-bar-wrap hidden" id="board-progress-wrap">
+                    <div class="progress-bar-inner" id="board-progress-bar"></div>
+                </div>
+            </div>
+            <div class="img-strip" id="board-strip">
+                <!-- Board images shown here -->
+            </div>
+        </div>
+
+        <!-- Wall Tweet Embeds -->
+        <div class="admin-panel">
+            <div class="panel-title">The Wall — X (Twitter) Review Embeds</div>
+            <p style="font-size:0.6rem; color:var(--text-muted); margin-bottom:14px; line-height:1.7;">
+                Paste a direct X/Twitter post URL (e.g. https://x.com/user/status/123...). Each link will embed as a tweet on the homepage wall.
+            </p>
+            <div style="display:flex; gap:10px; margin-bottom:12px;">
+                <input type="url" id="wall-link-input" placeholder="https://x.com/..." style="flex:1; margin:0;">
+                <button onclick="addWallLink()" style="flex-shrink:0;">+ Add</button>
+            </div>
+            <div id="wall-links-list">
+                <!-- Links listed here -->
+            </div>
+        </div>
+
+        <button onclick="saveFrontPage()" class="btn-success" style="width:100%; padding:16px; font-size:0.8rem;">
+            Save Front Page Settings ✦
+        </button>
+
+    </div><!-- /panel-frontpage -->
+
+
+    <!-- ──────────────────────────────────────
+         SECTION 2: GALLERY MANAGEMENT
+    ────────────────────────────────────────── -->
+    <div class="section-panel" id="panel-gallery-mgmt">
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+            <h3 style="font-size:1.3rem;">Gallery Posts</h3>
+            <button onclick="openGalleryModal()">+ Upload Post</button>
+        </div>
+
+        <div id="gallery-admin-grid" class="gallery-admin-grid">
+            <div style="grid-column:1/-1;text-align:center;padding:40px;font-family:'Fraunces',serif;font-style:italic;color:var(--text-muted);">
+                Loading...
+            </div>
+        </div>
+
+    </div><!-- /panel-gallery-mgmt -->
+
+
+    <!-- ──────────────────────────────────────
+         SECTION 3: SHOP MANAGEMENT
+    ────────────────────────────────────────── -->
+    <div class="section-panel" id="panel-shop-mgmt">
+
+        <!-- Shop Status Control -->
+        <div class="shop-status-panel">
+            <div>
+                <div class="status-label">Shop Status</div>
+                <div class="toggle-track" onclick="toggleShopStatus()">
+                    <div class="toggle-switch" id="status-toggle"></div>
+                    <span class="toggle-status-text" id="status-toggle-label">OPEN</span>
+                </div>
+            </div>
+            <div style="flex:1; min-width:260px;">
+                <div class="status-label">Closed Shop Message</div>
+                <textarea id="closed-msg-input" placeholder="e.g. We're restocking! Back on Friday. ♡" style="height:72px; resize:vertical; font-size:0.7rem; margin:0;"></textarea>
+            </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+            <div style="display:flex; gap:10px;">
+                <button onclick="openCatManager()">Folders</button>
+                <button onclick="openAdminModal()" style="background:#333;">+ Product</button>
+            </div>
+            <button onclick="saveShopChanges()" class="btn-success">Save Shop Changes</button>
+        </div>
+
+        <div class="admin-shop-area">
+            <div class="admin-sidebar">
+                <div class="admin-sidebar-title">Folders</div>
+                <div class="admin-sidebar-buttons" id="admin-sidebar"></div>
+            </div>
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-list"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div><!-- /panel-shop-mgmt -->
 
 </div><!-- /#admin-page -->
 
 
-<!-- ══════════════════════════════════════════════════════
-     MOBILE BOTTOM TAB BAR — hidden on desktop via CSS
-══════════════════════════════════════════════════════ -->
+<!-- MOBILE TAB BAR -->
 <nav id="mobile-tab-bar" aria-label="Admin navigation">
-
-    <a href="main-shop.html" class="tab-item" aria-label="Back to shop">
-        <span class="tab-icon">←</span>
-        <span class="tab-label">Shop</span>
-    </a>
-
-    <!-- Add Product: active on this panel -->
-    <button class="tab-item active" onclick="openAdminModal()" aria-label="Add product">
-        <span class="tab-icon">+</span>
-        <span class="tab-label">Add</span>
+    <button class="tab-item active" onclick="switchSection('frontpage', this); document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active')); this.classList.add('active');" aria-label="Front Page">
+        <span class="tab-icon">🏠</span>
+        <span class="tab-label">Front</span>
     </button>
-
-    <!-- Save Changes -->
-    <button class="tab-item" onclick="saveAdminChanges()" aria-label="Save changes">
+    <button class="tab-item" onclick="switchSection('gallery-mgmt', this); document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active')); this.classList.add('active');" aria-label="Gallery">
+        <span class="tab-icon">✦</span>
+        <span class="tab-label">Gallery</span>
+    </button>
+    <button class="tab-item" onclick="switchSection('shop-mgmt', this); document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active')); this.classList.add('active');" aria-label="Shop">
         <span class="tab-icon">◈</span>
-        <span class="tab-label">Save</span>
+        <span class="tab-label">Shop</span>
     </button>
-
-    <!-- Logout -->
     <button class="tab-item" onclick="logout()" aria-label="Logout">
         <span class="tab-icon">✕</span>
         <span class="tab-label">Logout</span>
     </button>
-
 </nav>
 
 
-<!-- ═══════════════════════════════════════════════
-     JAVASCRIPT
-═══════════════════════════════════════════════ -->
 <script>
     /* ─── AUTH GUARD ─── */
-    if (localStorage.getItem('rc_is_admin') !== '1') {
-        window.location.href = 'index.html';
+    // Admin panel accessed via direct URL only — no referral check needed,
+    // but we keep a soft session flag for convenience
+    const ADMIN_PASSWORD = "alohomora";
+    const savedPw = sessionStorage.getItem('rc_admin_auth');
+    if (!savedPw || savedPw !== ADMIN_PASSWORD) {
+        const entered = prompt("Admin Password:");
+        if (entered !== ADMIN_PASSWORD) {
+            document.body.innerHTML = '<p style="padding:40px;font-family:monospace;">Access denied.</p>';
+        } else {
+            sessionStorage.setItem('rc_admin_auth', ADMIN_PASSWORD);
+        }
     }
 
     /* ─── SUPABASE ─── */
     const SUPABASE_URL = 'https://wogftjsssxfhktgdfvod.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_9yJg8M-wrRXHMfuDnCtFkA_L3n1Ii36';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const BUCKET_GALLERY = 'gallery-images';
+    const BUCKET_FRONT   = 'front-page';
 
     /* ─── STATE ─── */
     let categories           = { "Stickers": [], "Pins": [] };
     let catalog              = [];
+    let galleryPosts         = [];
     let adminCurrentCategory = "";
     let tempIcon             = null;
     let tempDisplayImages    = [];
@@ -952,23 +1037,46 @@
     let closedShopMessage    = "";
     let confirmCallback      = null;
 
-    /* ─── NOTIFICATIONS ─── */
+    // Front Page state
+    let fp = {
+        hero_bg_url:     null,
+        character_url:   null,
+        tiktok_url:      '',
+        instagram_url:   '',
+        facebook_url:    '',
+        twitter_url:     '',
+        board_images:    [],
+        wall_tweet_urls: []
+    };
+
+    // Pending uploads
+    let pendingHeroBg    = null;
+    let pendingCharacter = null;
+    let pendingBoardUrls = []; // newly uploaded, added to fp.board_images on save
+
+    // Gallery upload state
+    let pendingGalleryUrl = null;
+
+    /* ─── SECTION SWITCHING ─── */
+    function switchSection(id, btn) {
+        document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('panel-' + id).classList.add('active');
+        if (btn && btn.classList.contains('section-tab')) btn.classList.add('active');
+    }
+
+    /* ─── TOAST ─── */
     let _notifyTimer = null;
     function notify(text, icon = "✨") {
         const box = document.getElementById('custom-alert');
         document.getElementById('alert-text').innerText = text;
         document.getElementById('alert-icon').innerText = icon;
         if (_notifyTimer) { clearTimeout(_notifyTimer); _notifyTimer = null; }
-        box.classList.remove('show');
-        void box.offsetWidth;
-        box.classList.add('show');
-        _notifyTimer = setTimeout(() => {
-            box.classList.remove('show');
-            _notifyTimer = null;
-        }, 3000);
+        box.classList.remove('show'); void box.offsetWidth; box.classList.add('show');
+        _notifyTimer = setTimeout(() => { box.classList.remove('show'); _notifyTimer = null; }, 3000);
     }
 
-    /* ─── CONFIRM DIALOG ─── */
+    /* ─── CONFIRM ─── */
     function customConfirm(msg, callback) {
         document.getElementById('confirm-msg').innerText = msg;
         document.getElementById('confirm-panel').classList.remove('hidden');
@@ -976,10 +1084,314 @@
     }
 
     function closeConfirm() { document.getElementById('confirm-panel').classList.add('hidden'); }
-    document.getElementById('confirm-yes').onclick = () => { confirmCallback(); closeConfirm(); };
+    document.getElementById('confirm-yes').onclick = () => { confirmCallback && confirmCallback(); closeConfirm(); };
 
-    /* ─── DATA LOADING ─── */
-    async function loadAllData() {
+    /* ─── CLOSE MODALS ─── */
+    function closeModals() {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
+
+    /* ─── LOGOUT ─── */
+    function logout() {
+        localStorage.removeItem('rc_is_admin');
+        sessionStorage.removeItem('rc_admin_auth');
+        window.location.href = 'index.html';
+    }
+
+    /* ═══════════════════════════════════════════
+       STORAGE UPLOAD HELPER
+    ═══════════════════════════════════════════ */
+    async function uploadFile(file, bucket, folder, progressBarId, progressWrapId) {
+        const wrap = progressWrapId ? document.getElementById(progressWrapId) : null;
+        const bar  = progressBarId ? document.getElementById(progressBarId) : null;
+        if (wrap) wrap.classList.remove('hidden');
+        if (bar) bar.style.width = '10%';
+
+        const fileName = `${folder}/${Date.now()}-${file.name.replace(/\s+/g, '_')}`;
+        const { data, error } = await supabaseClient.storage.from(bucket).upload(fileName, file, { cacheControl: '3600', upsert: false });
+
+        if (error) {
+            if (wrap) wrap.classList.add('hidden');
+            notify('Upload failed: ' + error.message, '❌');
+            return null;
+        }
+
+        if (bar) bar.style.width = '100%';
+        const { data: urlData } = supabaseClient.storage.from(bucket).getPublicUrl(data.path);
+        setTimeout(() => { if (wrap) wrap.classList.add('hidden'); if (bar) bar.style.width = '0%'; }, 600);
+        return urlData.publicUrl;
+    }
+
+    /* ═══════════════════════════════════════════
+       FRONT PAGE
+    ═══════════════════════════════════════════ */
+    async function loadFrontPage() {
+        const { data } = await supabaseClient.from('front_page_settings').select('*').eq('id', 1).single();
+        if (!data) return;
+
+        fp = { ...fp, ...data };
+
+        // Hero bg preview
+        if (fp.hero_bg_url) {
+            const img = document.getElementById('hero-bg-preview-img');
+            img.src = fp.hero_bg_url; img.classList.remove('hidden');
+            document.getElementById('hero-bg-placeholder-label').style.display = 'none';
+        }
+
+        // Character preview
+        if (fp.character_url) {
+            const img = document.getElementById('char-preview-img');
+            img.src = fp.character_url; img.classList.remove('hidden');
+            document.getElementById('char-preview-placeholder').style.display = 'none';
+        }
+
+        // Social links
+        document.getElementById('social-tiktok').value    = fp.tiktok_url    || '';
+        document.getElementById('social-instagram').value = fp.instagram_url  || '';
+        document.getElementById('social-facebook').value  = fp.facebook_url   || '';
+        document.getElementById('social-twitter').value   = fp.twitter_url    || '';
+
+        // Board strip
+        renderBoardStrip();
+
+        // Wall links
+        renderWallLinks();
+    }
+
+    /* Hero BG upload */
+    document.getElementById('hero-bg-input').addEventListener('change', async function() {
+        const file = this.files[0]; if (!file) return;
+        const url = await uploadFile(file, BUCKET_FRONT, 'hero-bg', 'hero-bg-progress-bar', 'hero-bg-progress-wrap');
+        if (url) {
+            pendingHeroBg = url;
+            const img = document.getElementById('hero-bg-preview-img');
+            img.src = url; img.classList.remove('hidden');
+            document.getElementById('hero-bg-placeholder-label').style.display = 'none';
+            notify('Hero image uploaded!', '🖼️');
+        }
+        this.value = '';
+    });
+
+    /* Character upload */
+    document.getElementById('char-input').addEventListener('change', async function() {
+        const file = this.files[0]; if (!file) return;
+        const url = await uploadFile(file, BUCKET_FRONT, 'character', 'char-progress-bar', 'char-progress-wrap');
+        if (url) {
+            pendingCharacter = url;
+            const img = document.getElementById('char-preview-img');
+            img.src = url; img.classList.remove('hidden');
+            document.getElementById('char-preview-placeholder').style.display = 'none';
+            notify('Character image uploaded!', '🎨');
+        }
+        this.value = '';
+    });
+
+    /* Board images upload */
+    document.getElementById('board-input').addEventListener('change', async function() {
+        const files = Array.from(this.files); if (!files.length) return;
+        const wrap = document.getElementById('board-progress-wrap');
+        const bar  = document.getElementById('board-progress-bar');
+        wrap.classList.remove('hidden'); bar.style.width = '0%';
+
+        for (let i = 0; i < files.length; i++) {
+            const url = await uploadFile(files[i], BUCKET_FRONT, 'board', null, null);
+            if (url) {
+                fp.board_images.push(url);
+            }
+            bar.style.width = `${((i+1)/files.length)*100}%`;
+        }
+
+        wrap.classList.add('hidden');
+        renderBoardStrip();
+        notify(`${files.length} board image(s) added!`, '🖼️');
+        this.value = '';
+    });
+
+    function renderBoardStrip() {
+        const strip = document.getElementById('board-strip');
+        strip.innerHTML = '';
+        (fp.board_images || []).forEach((url, i) => {
+            const item = document.createElement('div');
+            item.className = 'img-strip-item';
+            item.innerHTML = `
+                <img src="${url}" alt="Slide ${i+1}">
+                <button class="img-strip-del" onclick="removeBoardImage(${i})">✕</button>
+            `;
+            strip.appendChild(item);
+        });
+        if (fp.board_images.length === 0) {
+            strip.innerHTML = '<p style="font-size:0.62rem;color:var(--text-muted);padding:8px;">No slides yet.</p>';
+        }
+    }
+
+    function removeBoardImage(i) {
+        fp.board_images.splice(i, 1);
+        renderBoardStrip();
+    }
+
+    /* Wall links */
+    function addWallLink() {
+        const input = document.getElementById('wall-link-input');
+        const url = input.value.trim();
+        if (!url || !url.startsWith('http')) { notify('Please enter a valid URL.', '⚠️'); return; }
+        if (!fp.wall_tweet_urls) fp.wall_tweet_urls = [];
+        fp.wall_tweet_urls.push(url);
+        input.value = '';
+        renderWallLinks();
+        notify('Tweet link added!', '🐦');
+    }
+
+    function removeWallLink(i) {
+        fp.wall_tweet_urls.splice(i, 1);
+        renderWallLinks();
+    }
+
+    function renderWallLinks() {
+        const list = document.getElementById('wall-links-list');
+        list.innerHTML = '';
+        (fp.wall_tweet_urls || []).forEach((url, i) => {
+            const item = document.createElement('div');
+            item.className = 'wall-link-item';
+            item.innerHTML = `
+                <span class="wall-link-url">${url}</span>
+                <button onclick="removeWallLink(${i})" class="btn-danger" style="padding:6px 12px;font-size:0.6rem;">✕</button>
+            `;
+            list.appendChild(item);
+        });
+        if (!fp.wall_tweet_urls || fp.wall_tweet_urls.length === 0) {
+            list.innerHTML = '<p style="font-size:0.62rem;color:var(--text-muted);">No tweet links yet.</p>';
+        }
+    }
+
+    async function saveFrontPage() {
+        const payload = {
+            id:              1,
+            hero_bg_url:     pendingHeroBg    || fp.hero_bg_url    || null,
+            character_url:   pendingCharacter || fp.character_url  || null,
+            tiktok_url:      document.getElementById('social-tiktok').value.trim()    || null,
+            instagram_url:   document.getElementById('social-instagram').value.trim() || null,
+            facebook_url:    document.getElementById('social-facebook').value.trim()  || null,
+            twitter_url:     document.getElementById('social-twitter').value.trim()   || null,
+            board_images:    fp.board_images    || [],
+            wall_tweet_urls: fp.wall_tweet_urls || []
+        };
+
+        const { error } = await supabaseClient.from('front_page_settings').upsert(payload);
+        if (error) { notify('Save failed: ' + error.message, '❌'); return; }
+        fp = { ...fp, ...payload };
+        notify('Front page saved! ✦', '💾');
+    }
+
+    /* ═══════════════════════════════════════════
+       GALLERY MANAGEMENT
+    ═══════════════════════════════════════════ */
+    async function loadGalleryPosts() {
+        const { data } = await supabaseClient
+            .from('gallery_posts')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        galleryPosts = data || [];
+        renderGalleryAdmin();
+    }
+
+    function renderGalleryAdmin() {
+        const grid = document.getElementById('gallery-admin-grid');
+        grid.innerHTML = '';
+
+        if (galleryPosts.length === 0) {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;font-family:\'Fraunces\',serif;font-style:italic;color:var(--text-muted);">No posts yet — upload your first piece of art.</div>';
+            return;
+        }
+
+        galleryPosts.forEach((post, i) => {
+            const card = document.createElement('div');
+            card.className = 'gallery-admin-card';
+            card.innerHTML = `
+                <div class="gallery-admin-thumb">
+                    <img src="${post.image_url}" alt="${post.title}" loading="lazy">
+                </div>
+                <div class="gallery-admin-info">
+                    <div class="card-title">${post.title || '(no title)'}</div>
+                    <div class="card-cat">${post.category || 'Uncategorized'}</div>
+                </div>
+                <div class="gallery-admin-actions">
+                    <button onclick="deleteGalleryPost('${post.id}', '${post.image_url}')" class="btn-danger">Delete</button>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function openGalleryModal() {
+        pendingGalleryUrl = null;
+        document.getElementById('gallery-title').value = '';
+        document.getElementById('gallery-short-desc').value = '';
+        document.getElementById('gallery-category').value = '';
+        document.getElementById('gallery-preview-img').src = '';
+        document.getElementById('gallery-preview-img').classList.add('hidden');
+        document.getElementById('gallery-preview-label').style.display = '';
+        document.getElementById('gallery-modal').classList.remove('hidden');
+    }
+
+    document.getElementById('gallery-img-input').addEventListener('change', async function() {
+        const file = this.files[0]; if (!file) return;
+        const r = new FileReader();
+        r.onload = e => {
+            const img = document.getElementById('gallery-preview-img');
+            img.src = e.target.result; img.classList.remove('hidden');
+            document.getElementById('gallery-preview-label').style.display = 'none';
+        };
+        r.readAsDataURL(file);
+
+        const url = await uploadFile(file, BUCKET_GALLERY, 'posts', 'gallery-progress-bar', 'gallery-progress-wrap');
+        if (url) { pendingGalleryUrl = url; notify('Image uploaded!', '🖼️'); }
+        this.value = '';
+    });
+
+    async function submitGalleryPost() {
+        const title     = document.getElementById('gallery-title').value.trim();
+        const shortDesc = document.getElementById('gallery-short-desc').value.trim();
+        const category  = document.getElementById('gallery-category').value.trim();
+
+        if (!title)           { notify('Please enter a title.', '⚠️'); return; }
+        if (!pendingGalleryUrl) { notify('Please upload an image first.', '⚠️'); return; }
+
+        const { data, error } = await supabaseClient
+            .from('gallery_posts')
+            .insert([{ image_url: pendingGalleryUrl, title, short_description: shortDesc, category }])
+            .select()
+            .single();
+
+        if (error) { notify('Save failed: ' + error.message, '❌'); return; }
+        galleryPosts.unshift(data);
+        renderGalleryAdmin();
+        closeModals();
+        notify('Post published! ✦', '✦');
+    }
+
+    async function deleteGalleryPost(postId, imageUrl) {
+        customConfirm('Delete this gallery post? This cannot be undone.', async () => {
+            const { error } = await supabaseClient.from('gallery_posts').delete().eq('id', postId);
+            if (error) { notify('Delete failed: ' + error.message, '❌'); return; }
+
+            try {
+                const pathStart = imageUrl.indexOf(`/${BUCKET_GALLERY}/`) + `/${BUCKET_GALLERY}/`.length;
+                await supabaseClient.storage.from(BUCKET_GALLERY).remove([imageUrl.substring(pathStart)]);
+            } catch(e) { console.warn('Storage delete warning:', e); }
+
+            galleryPosts = galleryPosts.filter(p => String(p.id) !== String(postId));
+            renderGalleryAdmin();
+            notify('Post deleted.', '🗑️');
+        });
+    }
+
+    /* ═══════════════════════════════════════════
+       SHOP MANAGEMENT
+    ═══════════════════════════════════════════ */
+    async function loadShopData() {
         const { data: setts } = await supabaseClient.from('settings').select('*').single();
         if (setts) {
             categories = (setts.category_list && !Array.isArray(setts.category_list))
@@ -988,21 +1400,13 @@
             isShopOpen        = setts.is_shop_open !== false;
             closedShopMessage = setts.closed_shop_message || "";
         }
+
         const { data: prods } = await supabaseClient.from('products').select('*');
         if (prods) catalog = prods.map(p => ({ ...p, cartQty: 0 }));
 
-        const firstCat = Object.keys(categories)[0] || "";
-        adminCurrentCategory = firstCat;
+        adminCurrentCategory = Object.keys(categories)[0] || "";
     }
 
-    /* ─── LOGOUT ─── */
-    function logout() {
-        localStorage.removeItem('rc_is_admin');
-        sessionStorage.removeItem('rc_username');
-        window.location.href = 'index.html';
-    }
-
-    /* ─── SHOP STATUS ─── */
     function syncShopStatusUI() {
         const toggle   = document.getElementById('status-toggle');
         const label    = document.getElementById('status-toggle-label');
@@ -1025,7 +1429,6 @@
         syncShopStatusUI();
     }
 
-    /* ─── ADMIN SIDEBAR ─── */
     function renderAdminSidebar() {
         const sidebar = document.getElementById('admin-sidebar');
         sidebar.innerHTML = '';
@@ -1033,32 +1436,23 @@
             const btn = document.createElement('button');
             btn.className = `admin-folder-btn${adminCurrentCategory === catName ? ' active' : ''}`;
             btn.textContent = catName;
-            btn.onclick = () => {
-                adminCurrentCategory = catName;
-                renderAdminSidebar();
-                renderAdminTable();
-            };
+            btn.onclick = () => { adminCurrentCategory = catName; renderAdminSidebar(); renderAdminTable(); };
             sidebar.appendChild(btn);
         });
     }
 
-    /* ─── ADMIN TABLE ─── */
     function renderAdminTable() {
         const tbody = document.getElementById('admin-list');
         tbody.innerHTML = '';
-
         const items = catalog.filter(item => item.category === adminCurrentCategory);
-
         if (items.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="admin-table-empty">No products in this folder yet.</td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="4" class="admin-table-empty">No products in this folder yet.</td></tr>';
             return;
         }
-
         items.forEach(item => {
             const i = catalog.indexOf(item);
             const isLive = item.status === 'live';
             const tr = document.createElement('tr');
-            tr.id = `row-${i}`;
             tr.innerHTML = `
                 <td>
                     <div class="prod-name">${item.name}</div>
@@ -1081,32 +1475,30 @@
         syncItemToCloud(idx);
     }
 
-    /* ─── SAVE ADMIN CHANGES ─── */
-    async function saveAdminChanges() {
-        const btn = event.target;
-        btn.textContent = "⏳ Saving...";
+    async function saveShopChanges() {
         const msgEl = document.getElementById('closed-msg-input');
         if (msgEl) closedShopMessage = msgEl.value.trim();
-        await supabaseClient.from('settings').upsert({
-            id:                   1,
-            category_list:        categories,
-            is_shop_open:         isShopOpen,
-            closed_shop_message:  closedShopMessage
+        const { error } = await supabaseClient.from('settings').upsert({
+            id: 1,
+            category_list: categories,
+            is_shop_open: isShopOpen,
+            closed_shop_message: closedShopMessage
         });
-        notify("All changes saved!", "💾");
-        btn.textContent = "Save Changes";
+        if (error) { notify('Save failed: ' + error.message, '❌'); return; }
+        notify('Shop settings saved!', '💾');
     }
 
-    /* ─── CATEGORY MANAGER ─── */
-    function openCatManager() {
-        renderCategoryManager();
-        document.getElementById('cat-manager-modal').classList.remove('hidden');
+    async function saveAllChanges() {
+        await saveFrontPage();
+        await saveShopChanges();
     }
+
+    /* Category Manager */
+    function openCatManager() { renderCategoryManager(); document.getElementById('cat-manager-modal').classList.remove('hidden'); }
 
     function renderCategoryManager() {
         const list = document.getElementById('mgr-list');
         list.innerHTML = '';
-
         Object.keys(categories).forEach(cat => {
             const div = document.createElement('div');
             div.className = 'cat-manager-item';
@@ -1121,7 +1513,6 @@
                     <button onclick="mgrAddSub('${cat}')">+ Add</button>
                 </div>`;
             list.appendChild(div);
-
             const subWrap = document.getElementById(`mgr-subs-${cat}`);
             categories[cat].forEach(sub => {
                 const tag = document.createElement('span');
@@ -1137,8 +1528,7 @@
         if (name && !categories[name]) {
             categories[name] = [];
             document.getElementById('mgr-new-cat').value = '';
-            renderCategoryManager();
-            renderAdminSidebar();
+            renderCategoryManager(); renderAdminSidebar();
             notify("Folder created!", "📁");
         }
     }
@@ -1147,9 +1537,7 @@
         customConfirm(`Delete "${cat}" and all its sub-categories?`, () => {
             delete categories[cat];
             if (adminCurrentCategory === cat) adminCurrentCategory = Object.keys(categories)[0] || "";
-            renderCategoryManager();
-            renderAdminSidebar();
-            renderAdminTable();
+            renderCategoryManager(); renderAdminSidebar(); renderAdminTable();
             notify("Folder deleted.", "🗑️");
         });
     }
@@ -1171,8 +1559,8 @@
     /* ─── PRODUCT MODAL ─── */
     function openAdminModal(idx = null) {
         editingIdx        = idx;
-        tempIcon          = idx !== null ? (catalog[idx].product_icon || null)       : null;
-        tempDisplayImages = idx !== null ? [...(catalog[idx].display_images || [])]  : [];
+        tempIcon          = idx !== null ? (catalog[idx].product_icon || null)      : null;
+        tempDisplayImages = idx !== null ? [...(catalog[idx].display_images || [])] : [];
 
         document.getElementById('p-title').value = idx !== null ? catalog[idx].name        : "";
         document.getElementById('p-desc').value  = idx !== null ? catalog[idx].description : "";
@@ -1183,7 +1571,6 @@
         document.querySelectorAll('.dynamic-cat-field').forEach(el => el.remove());
 
         const titleInput = document.getElementById('p-title');
-
         const catSelect = document.createElement('select');
         catSelect.id = 'p-category';
         catSelect.className = 'dynamic-cat-field';
@@ -1198,7 +1585,6 @@
         const subSelect = document.createElement('select');
         subSelect.id = 'p-subcategory';
         subSelect.className = 'dynamic-cat-field';
-
         titleInput.after(catSelect, subSelect);
         updateSubcatDropdown(idx !== null ? catalog[idx].subcategory : "");
 
@@ -1209,12 +1595,9 @@
         saveBtn.textContent = idx !== null ? 'Save Changes' : 'Add Product';
         saveBtn.onclick = saveProduct;
         const cancelBtn = document.createElement('button');
-        cancelBtn.className = 'btn-ghost';
-        cancelBtn.style.flex = '1';
-        cancelBtn.textContent = 'Cancel';
-        cancelBtn.onclick = closeModals;
-        footer.appendChild(saveBtn);
-        footer.appendChild(cancelBtn);
+        cancelBtn.className = 'btn-ghost'; cancelBtn.style.flex = '1';
+        cancelBtn.textContent = 'Cancel'; cancelBtn.onclick = closeModals;
+        footer.appendChild(saveBtn); footer.appendChild(cancelBtn);
 
         if (idx !== null) {
             const deleteBtn = document.createElement('button');
@@ -1225,16 +1608,14 @@
                 customConfirm(`Delete "${catalog[idx].name}"? This cannot be undone.`, async () => {
                     await supabaseClient.from('products').delete().eq('id', catalog[idx].id);
                     catalog.splice(idx, 1);
-                    closeModals();
-                    renderAdminTable();
+                    closeModals(); renderAdminTable(); renderAdminSidebar();
                     notify("Product deleted.", "🗑️");
                 });
             };
             footer.appendChild(deleteBtn);
         }
 
-        renderIconPreview();
-        renderDisplayPreviews();
+        renderIconPreview(); renderDisplayPreviews();
         document.getElementById('admin-modal').classList.remove('hidden');
     }
 
@@ -1253,19 +1634,12 @@
     function renderIconPreview() {
         const slot = document.getElementById('icon-slot');
         if (!slot) return;
-        if (tempIcon) {
-            slot.innerHTML = `
-                <img src="${tempIcon}" alt="Icon">
-                <button class="img-slot-del" onclick="deleteIcon()" title="Remove icon">×</button>`;
-        } else {
-            slot.innerHTML = 'Empty';
-        }
+        slot.innerHTML = tempIcon
+            ? `<img src="${tempIcon}" alt="Icon"><button class="img-slot-del" onclick="deleteIcon()" title="Remove icon">×</button>`
+            : 'Empty';
     }
 
-    function deleteIcon() {
-        tempIcon = null;
-        renderIconPreview();
-    }
+    function deleteIcon() { tempIcon = null; renderIconPreview(); }
 
     function renderDisplayPreviews() {
         const grid = document.getElementById('display-slots-grid');
@@ -1275,10 +1649,8 @@
             const slot = document.createElement('div');
             slot.className = 'img-slot';
             if (tempDisplayImages[i]) {
-                const capturedI = i;
-                slot.innerHTML = `
-                    <img src="${tempDisplayImages[i]}" alt="Display ${i+1}">
-                    <button class="img-slot-del" onclick="deleteDisplayImage(${capturedI})" title="Remove">×</button>`;
+                const ci = i;
+                slot.innerHTML = `<img src="${tempDisplayImages[ci]}" alt="Display ${ci+1}"><button class="img-slot-del" onclick="deleteDisplayImage(${ci})" title="Remove">×</button>`;
             } else {
                 slot.innerHTML = `<span style="text-align:center;line-height:1.4;">${i+1}<br>Empty</span>`;
             }
@@ -1286,12 +1658,8 @@
         }
     }
 
-    function deleteDisplayImage(i) {
-        tempDisplayImages.splice(i, 1);
-        renderDisplayPreviews();
-    }
+    function deleteDisplayImage(i) { tempDisplayImages.splice(i, 1); renderDisplayPreviews(); }
 
-    /* ─── SAVE PRODUCT ─── */
     async function saveProduct() {
         const name = document.getElementById('p-title').value.trim();
         if (!name) { notify("Product name is required!", "⚠️"); return; }
@@ -1314,12 +1682,10 @@
             catalog.push({ ...data, id: Date.now(), cartQty: 0 });
         }
 
-        closeModals();
-        renderAdminTable();
+        closeModals(); renderAdminTable();
         await syncItemToCloud(editingIdx === null ? catalog.length - 1 : editingIdx);
     }
 
-    /* ─── CLOUD SYNC ─── */
     async function syncItemToCloud(idx) {
         try {
             const { cartQty, ...cleanData } = catalog[idx];
@@ -1328,75 +1694,48 @@
         } catch (err) { notify("Sync failed!", "❌"); }
     }
 
-    /* ─── CLOSE MODALS ─── */
-    function closeModals() {
-        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
-    }
-
-    /* ─── IMAGE UPLOAD HANDLERS ─── */
-    document.getElementById('icon-upload').addEventListener('change', async function () {
-        const file = this.files[0];
-        if (!file) return;
+    /* Icon upload */
+    document.getElementById('icon-upload').addEventListener('change', async function() {
+        const file = this.files[0]; if (!file) return;
         if (!file.type.startsWith('image/')) { notify("Please select an image file.", "⚠️"); return; }
         const reader = new FileReader();
         reader.onload = e => { tempIcon = e.target.result; renderIconPreview(); notify("Icon loaded!", "🖼️"); };
-        reader.onerror = () => notify("Failed to read icon file.", "❌");
         reader.readAsDataURL(file);
         this.value = '';
     });
 
-    document.getElementById('display-upload').addEventListener('change', async function () {
-        const files = Array.from(this.files);
-        if (!files.length) return;
-
+    /* Display images upload */
+    document.getElementById('display-upload').addEventListener('change', async function() {
+        const files = Array.from(this.files); if (!files.length) return;
         const progressWrap = document.getElementById('upload-progress-wrap');
         const progressBar  = document.getElementById('upload-progress-bar');
         const statusText   = document.getElementById('upload-status-text');
-
-        progressWrap.classList.remove('hidden');
-        statusText.classList.remove('hidden');
+        progressWrap.classList.remove('hidden'); statusText.classList.remove('hidden');
         progressBar.style.width = '0%';
 
         const slotsLeft = 4 - tempDisplayImages.length;
-        if (slotsLeft <= 0) {
-            notify("All 4 display slots are full. Delete one first.", "⚠️");
-            progressWrap.classList.add('hidden');
-            statusText.classList.add('hidden');
-            this.value = '';
-            return;
-        }
+        if (slotsLeft <= 0) { notify("All 4 slots are full.", "⚠️"); progressWrap.classList.add('hidden'); statusText.classList.add('hidden'); this.value = ''; return; }
 
         const toLoad = files.filter(f => f.type.startsWith('image/')).slice(0, slotsLeft);
-
         for (let i = 0; i < toLoad.length; i++) {
             await new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = e => {
-                    tempDisplayImages.push(e.target.result);
-                    progressBar.style.width = `${((i + 1) / toLoad.length) * 100}%`;
-                    resolve();
-                };
+                reader.onload = e => { tempDisplayImages.push(e.target.result); progressBar.style.width = `${((i+1)/toLoad.length)*100}%`; resolve(); };
                 reader.onerror = reject;
                 reader.readAsDataURL(toLoad[i]);
             });
         }
 
-        progressWrap.classList.add('hidden');
-        statusText.classList.add('hidden');
+        progressWrap.classList.add('hidden'); statusText.classList.add('hidden');
         progressBar.style.width = '0%';
         renderDisplayPreviews();
-        notify(`${toLoad.length} image${toLoad.length > 1 ? 's' : ''} loaded!`, "🖼️");
+        notify(`${toLoad.length} image(s) loaded!`, "🖼️");
         this.value = '';
-    });
-
-    /* ─── KEYBOARD: ESC closes modals ─── */
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closeModals();
     });
 
     /* ─── INIT ─── */
     (async function init() {
-        await loadAllData();
+        await Promise.all([loadFrontPage(), loadShopData(), loadGalleryPosts()]);
         syncShopStatusUI();
         renderAdminSidebar();
         renderAdminTable();
