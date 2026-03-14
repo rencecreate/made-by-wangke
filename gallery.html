@@ -50,9 +50,9 @@
 
         /* GALLERY GRID */
         .gallery-container{max-width:1300px;margin:0 auto;padding:40px 24px;}
-        /* CSS columns = masonry-like: images stack at their natural height, no gaps */
-        .gallery-grid{columns:3;column-gap:20px;}
-        .gallery-grid .photo-card{break-inside:avoid;margin-bottom:20px;width:100%;}
+        /* JS masonry — grid is position:relative, cards are absolute */
+        .gallery-grid{position:relative;width:100%;}
+        .gallery-grid .photo-card{position:absolute;width:0;}/* width set by JS */
         .gallery-empty{column-span:all;text-align:center;padding:80px 20px;}
 
         /* PHOTO CARD — flat, seamless, no border */
@@ -129,14 +129,11 @@
             .folder-link{font-size:0.8rem;flex-shrink:0;white-space:nowrap;padding:10px 4px;}
 
             .gallery-container{padding:16px 16px 40px;}
-            .gallery-grid{columns:2;column-gap:10px;}
-            .gallery-grid .photo-card{margin-bottom:10px;}
 
             #g-alert{bottom:calc(var(--tab-tot) + 12px);right:12px;left:12px;max-width:none;}
         }
 
         @media(max-width:374px){
-            .gallery-grid{columns:1;}
             .folder-link{font-size:0.72rem;}
         }
     </style>
@@ -197,7 +194,90 @@
 
     function buildCategoryNav(posts){const nav=document.getElementById('folder-nav');nav.innerHTML='';const cats=['All',...[...new Set(posts.map(p=>p.category).filter(Boolean))].sort()];cats.forEach(cat=>{const btn=document.createElement('button');btn.className=`folder-link${currentCategory===cat?' active':''}`;btn.textContent=cat;btn.onclick=()=>{currentCategory=cat;document.querySelectorAll('.folder-link').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderGrid();};nav.appendChild(btn);});}
 
-    function renderGrid(){const grid=document.getElementById('gallery-grid');grid.innerHTML='';const filtered=currentCategory==='All'?posts:posts.filter(p=>p.category===currentCategory);if(!filtered.length){grid.innerHTML=`<div class="gallery-empty"><h2>${posts.length===0?'No posts yet':'Nothing here yet'}</h2><p>${posts.length===0?'Check back soon for new work.':'No posts in this category yet.'}</p></div>`;return;}filtered.forEach((post)=>{const card=document.createElement('div');card.className='photo-card';card.innerHTML=`<img class="photo-img" src="${post.image_url}" alt="${post.title||''}" loading="lazy"><div class="photo-overlay"><div class="overlay-title">${post.title||''}</div>${post.short_description?`<div class="overlay-desc">${post.short_description}</div>`:''}</div>${isAdmin?`<button class="photo-del-btn" onclick="deletePost(event,'${post.id}','${post.image_url}')">✕</button>`:''}`; card.addEventListener('touchstart',()=>{document.querySelectorAll('.photo-card.touch-active').forEach(c=>{if(c!==card)c.classList.remove('touch-active');});card.classList.toggle('touch-active');},{passive:true});grid.appendChild(card);});}
+    /* ── MASONRY ENGINE ─────────────────────────────────────────────────────
+       Places each card into the shortest column at the time of placement.
+       Order is preserved (newest → oldest left-to-right across cols).
+       Re-runs on window resize via debounce.
+    ──────────────────────────────────────────────────────────────────────── */
+    const GAP = 14; // px between cards
+
+    function getColCount() {
+        const w = document.getElementById('gallery-grid').offsetWidth;
+        if (w < 480) return 1;
+        if (w < 768) return 2;
+        if (w < 1100) return 3;
+        return 4;
+    }
+
+    function layoutMasonry() {
+        const grid = document.getElementById('gallery-grid');
+        const cards = Array.from(grid.querySelectorAll('.photo-card'));
+        if (!cards.length) return;
+
+        const totalW = grid.offsetWidth;
+        const cols = getColCount();
+        const colW = (totalW - GAP * (cols - 1)) / cols;
+        const colHeights = new Array(cols).fill(0);
+
+        cards.forEach(card => {
+            card.style.width = colW + 'px';
+            // Find shortest column
+            const minH = Math.min(...colHeights);
+            const col = colHeights.indexOf(minH);
+            const x = col * (colW + GAP);
+            const y = minH === 0 ? 0 : minH + GAP;
+            card.style.left = x + 'px';
+            card.style.top  = y + 'px';
+            colHeights[col] = y + card.offsetHeight;
+        });
+
+        grid.style.height = Math.max(...colHeights) + 'px';
+    }
+
+    // Re-layout after all images in a batch have loaded
+    function layoutAfterImages(cards) {
+        let loaded = 0;
+        const imgs = cards.map(c => c.querySelector('img')).filter(Boolean);
+        if (!imgs.length) { layoutMasonry(); return; }
+        imgs.forEach(img => {
+            if (img.complete) { if (++loaded === imgs.length) layoutMasonry(); return; }
+            img.addEventListener('load',  () => { if (++loaded === imgs.length) layoutMasonry(); }, { once: true });
+            img.addEventListener('error', () => { if (++loaded === imgs.length) layoutMasonry(); }, { once: true });
+        });
+    }
+
+    // Debounced resize
+    let _resizeTimer = null;
+    window.addEventListener('resize', () => {
+        clearTimeout(_resizeTimer);
+        _resizeTimer = setTimeout(layoutMasonry, 120);
+    });
+
+    function buildCard(post) {
+        const card = document.createElement('div');
+        card.className = 'photo-card';
+        card.innerHTML = `<img class="photo-img" src="${post.image_url}" alt="${post.title || ''}" loading="lazy"><div class="photo-overlay"><div class="overlay-title">${post.title || ''}</div>${post.short_description ? `<div class="overlay-desc">${post.short_description}</div>` : ''}</div>${isAdmin ? `<button class="photo-del-btn" onclick="deletePost(event,'${post.id}','${post.image_url}')">✕</button>` : ''}`;
+        card.addEventListener('touchstart', () => {
+            document.querySelectorAll('.photo-card.touch-active').forEach(c => { if (c !== card) c.classList.remove('touch-active'); });
+            card.classList.toggle('touch-active');
+        }, { passive: true });
+        return card;
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById('gallery-grid');
+        grid.innerHTML = '';
+        grid.style.height = '';
+        const filtered = currentCategory === 'All' ? posts : posts.filter(p => p.category === currentCategory);
+        if (!filtered.length) {
+            grid.style.position = 'relative';
+            grid.innerHTML = `<div class="gallery-empty" style="position:relative;"><h2>${posts.length === 0 ? 'No posts yet' : 'Nothing here yet'}</h2><p>${posts.length === 0 ? 'Check back soon for new work.' : 'No posts in this category yet.'}</p></div>`;
+            return;
+        }
+        const cards = filtered.map(buildCard);
+        cards.forEach(c => grid.appendChild(c));
+        layoutAfterImages(cards);
+    }
 
     async function deletePost(event,postId,imageUrl){event.stopPropagation();if(!confirm('Delete this post?'))return;const{error}=await sb.from('gallery_posts').delete().eq('id',postId);if(error){notify('Delete failed: '+error.message,'❌');return;}try{const ps=imageUrl.indexOf(`/${BUCKET}/`)+`/${BUCKET}/`.length;await sb.storage.from(BUCKET).remove([imageUrl.substring(ps)]);}catch(e){}posts=posts.filter(p=>String(p.id)!==String(postId));buildCategoryNav(posts);renderGrid();notify('Post deleted.','🗑️');}
 
