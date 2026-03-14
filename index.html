@@ -279,7 +279,7 @@
             // Cover photo
             if(settings.hero_bg_url){const ci=document.getElementById('cover-photo-img'),cp=document.getElementById('cover-photo-placeholder');ci.src=settings.hero_bg_url;ci.classList.remove('hidden');if(cp)cp.style.display='none';}
             // Hero square (character/mascot image reused as 1:1 photo)
-            if(settings.character_url){const si=document.getElementById('hero-square-img'),sp=document.getElementById('hero-square-placeholder');si.src=settings.character_url;si.classList.remove('hidden');if(sp)sp.style.display='none';}
+            if(settings.profile_url){const si=document.getElementById('hero-square-img'),sp=document.getElementById('hero-square-placeholder');si.src=settings.profile_url;si.classList.remove('hidden');if(sp)sp.style.display='none';}
             buildCarousel(settings.board_images||[]);
             buildWall(settings.wall_tweet_urls||[]);}}catch(err){console.error('Init error:',err);}}
     init();

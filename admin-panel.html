@@ -853,6 +853,22 @@
             </div>
         </div>
 
+        <!-- Profile Image -->
+        <div class="admin-panel">
+            <div class="panel-title">Profile Image (1:1 box on homepage)</div>
+            <div class="upload-zone">
+                <span class="upload-label">Upload Profile Photo</span>
+                <div id="profile-preview" style="width:120px;height:120px;background:var(--grey);overflow:hidden;margin-bottom:8px;display:flex;align-items:center;justify-content:center;">
+                    <img id="profile-preview-img" src="" alt="" class="hidden" style="width:100%;height:100%;object-fit:cover;">
+                    <span id="profile-placeholder-label" style="font-size:0.6rem;color:var(--text-muted);">No image yet</span>
+                </div>
+                <input type="file" id="profile-input" accept="image/*" style="font-size:0.62rem;">
+                <div class="progress-bar-wrap hidden" id="profile-progress-wrap">
+                    <div class="progress-bar-inner" id="profile-progress-bar"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- Social Links -->
         <div class="admin-panel">
             <div class="panel-title">Social Media Links</div>
@@ -1044,6 +1060,7 @@
     let fp = {
         logo_url:        null,
         hero_bg_url:     null,
+        profile_url:     null,
         tiktok_url:      '',
         instagram_url:   '',
         facebook_url:    '',
@@ -1054,6 +1071,7 @@
 
     // Pending uploads
     let pendingHeroBg    = null;
+    let pendingProfile   = null;
     let pendingLogo      = null;
 
     // Gallery upload state
@@ -1156,6 +1174,12 @@
             document.getElementById('hero-bg-placeholder-label').style.display = 'none';
         }
 
+        if (fp.profile_url) {
+            const img = document.getElementById('profile-preview-img');
+            img.src = fp.profile_url; img.classList.remove('hidden');
+            document.getElementById('profile-placeholder-label').style.display = 'none';
+        }
+
         // Social links
         document.getElementById('social-tiktok').value    = fp.tiktok_url    || '';
         document.getElementById('social-instagram').value = fp.instagram_url  || '';
@@ -1169,11 +1193,25 @@
         renderWallLinks();
     }
 
-    /* Logo upload */
+    /* ─── Storage file delete helper ─── */
+    async function deleteStorageFile(bucket, publicUrl) {
+        try {
+            // Extract storage path from the public URL: everything after /object/public/{bucket}/
+            const marker = `/object/public/${bucket}/`;
+            const idx = publicUrl.indexOf(marker);
+            if (idx === -1) return;
+            const filePath = decodeURIComponent(publicUrl.substring(idx + marker.length).split('?')[0]);
+            await supabaseClient.storage.from(bucket).remove([filePath]);
+        } catch (e) { console.warn('Could not delete old file:', e); }
+    }
+
+    /* Logo upload — auto-deletes old file on replace */
     document.getElementById('logo-input').addEventListener('change', async function() {
         const file = this.files[0]; if (!file) return;
+        const oldUrl = pendingLogo || fp.logo_url;
         const url = await uploadFile(file, BUCKET_FRONT, 'logo', 'logo-progress-bar', 'logo-progress-wrap');
         if (url) {
+            if (oldUrl) await deleteStorageFile(BUCKET_FRONT, oldUrl);
             pendingLogo = url;
             const img = document.getElementById('logo-preview-img');
             img.src = url; img.classList.remove('hidden');
@@ -1183,16 +1221,34 @@
         this.value = '';
     });
 
-    /* Hero BG upload */
+    /* Hero BG upload — auto-deletes old file on replace */
     document.getElementById('hero-bg-input').addEventListener('change', async function() {
         const file = this.files[0]; if (!file) return;
+        const oldUrl = pendingHeroBg || fp.hero_bg_url;
         const url = await uploadFile(file, BUCKET_FRONT, 'hero-bg', 'hero-bg-progress-bar', 'hero-bg-progress-wrap');
         if (url) {
+            if (oldUrl) await deleteStorageFile(BUCKET_FRONT, oldUrl);
             pendingHeroBg = url;
             const img = document.getElementById('hero-bg-preview-img');
             img.src = url; img.classList.remove('hidden');
             document.getElementById('hero-bg-placeholder-label').style.display = 'none';
             notify('Hero image uploaded!', '🖼️');
+        }
+        this.value = '';
+    });
+
+    /* Profile upload — auto-deletes old file on replace */
+    document.getElementById('profile-input').addEventListener('change', async function() {
+        const file = this.files[0]; if (!file) return;
+        const oldUrl = pendingProfile || fp.profile_url;
+        const url = await uploadFile(file, BUCKET_FRONT, 'profile', 'profile-progress-bar', 'profile-progress-wrap');
+        if (url) {
+            if (oldUrl) await deleteStorageFile(BUCKET_FRONT, oldUrl);
+            pendingProfile = url;
+            const img = document.getElementById('profile-preview-img');
+            img.src = url; img.classList.remove('hidden');
+            document.getElementById('profile-placeholder-label').style.display = 'none';
+            notify('Profile image uploaded!', '🖼️');
         }
         this.value = '';
     });
@@ -1279,6 +1335,7 @@
             id:              1,
             logo_url:        pendingLogo       || fp.logo_url        || null,
             hero_bg_url:     pendingHeroBg     || fp.hero_bg_url     || null,
+            profile_url:     pendingProfile    || fp.profile_url     || null,
             tiktok_url:      document.getElementById('social-tiktok').value.trim()    || null,
             instagram_url:   document.getElementById('social-instagram').value.trim() || null,
             facebook_url:    document.getElementById('social-facebook').value.trim()  || null,
