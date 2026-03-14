@@ -187,7 +187,7 @@
 
     <!-- Social Buttons -->
     <div class="social-section">
-        <div class="social-label">Find us on</div>
+        <div class="social-label">Find me on</div>
         <div class="social-btns">
             <a class="social-btn" id="link-tiktok" href="#" target="_blank" rel="noopener" aria-label="TikTok">
                 <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.28 6.28 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.01a8.16 8.16 0 004.77 1.52V7.1a4.85 4.85 0 01-1-.41z"/></svg>
@@ -209,7 +209,7 @@
         <div class="section-label">The Board</div>
         <div class="carousel" id="carousel">
             <div class="carousel-track" id="carousel-track">
-                <div class="carousel-slide">No slides yet</div>
+                <div class="carousel-slide">No Preview</div>
             </div>
             <button class="carousel-btn prev" id="carousel-prev" aria-label="Previous">&#8592;</button>
             <button class="carousel-btn next" id="carousel-next" aria-label="Next">&#8594;</button>
@@ -255,7 +255,7 @@
     (function(){if(window.innerWidth<768)return;const hdr=document.querySelector('header');let lastY=0,ticking=false;function onScroll(){if(!ticking){window.requestAnimationFrame(()=>{const y=window.scrollY;if(y>60&&y>lastY)hdr.classList.add('headroom--hidden');else hdr.classList.remove('headroom--hidden');lastY=y<=0?0:y;ticking=false;});ticking=true;}}window.addEventListener('scroll',onScroll,{passive:true});})();
 
     /* CAROUSEL */
-    function buildCarousel(images){const track=document.getElementById('carousel-track'),dotsWrap=document.getElementById('carousel-dots');track.innerHTML='';dotsWrap.innerHTML='';if(!images||!images.length){track.innerHTML='<div class="carousel-slide">No slides yet — add images via Admin Panel</div>';return;}slides=images;slides.forEach((src,i)=>{const slide=document.createElement('div');slide.className='carousel-slide';const img=document.createElement('img');img.src=src;img.alt=`Slide ${i+1}`;img.loading='lazy';slide.appendChild(img);track.appendChild(slide);const dot=document.createElement('button');dot.className='carousel-dot'+(i===0?' active':'');dot.setAttribute('aria-label',`Slide ${i+1}`);dot.addEventListener('click',()=>{goTo(i);stopAutoplay();startAutoplay();});dotsWrap.appendChild(dot);});goTo(0);startAutoplay();}
+    function buildCarousel(images){const track=document.getElementById('carousel-track'),dotsWrap=document.getElementById('carousel-dots');track.innerHTML='';dotsWrap.innerHTML='';if(!images||!images.length){track.innerHTML='<div class="carousel-slide">No Preview</div>';return;}slides=images;slides.forEach((src,i)=>{const slide=document.createElement('div');slide.className='carousel-slide';const img=document.createElement('img');img.src=src;img.alt=`Slide ${i+1}`;img.loading='lazy';slide.appendChild(img);track.appendChild(slide);const dot=document.createElement('button');dot.className='carousel-dot'+(i===0?' active':'');dot.setAttribute('aria-label',`Slide ${i+1}`);dot.addEventListener('click',()=>{goTo(i);stopAutoplay();startAutoplay();});dotsWrap.appendChild(dot);});goTo(0);startAutoplay();}
 
     function goTo(idx){currentSlide=(idx+slides.length)%slides.length;document.getElementById('carousel-track').style.transform=`translateX(-${currentSlide*100}%)`;document.querySelectorAll('.carousel-dot').forEach((d,i)=>d.classList.toggle('active',i===currentSlide));}
     function startAutoplay(){stopAutoplay();if(slides.length<=1)return;autoplayTimer=setInterval(()=>goTo(currentSlide+1),4000);}
