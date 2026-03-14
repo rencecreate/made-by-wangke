@@ -304,7 +304,6 @@
         <a href="gallery.html" class="nav-btn">Gallery</a>
         <a href="main-shop.html" class="nav-btn active">Shop</a>
         <a href="index.html" class="nav-btn">Home</a>
-        <button class="nav-btn" id="header-action-btn" onclick="handleHeaderAction()">EDIT ORDER (<span id="cart-qty-total">0</span>)</button>
     </nav>
 </header>
 
@@ -363,7 +362,7 @@
 
     (async function loadLogo(){try{const{data}=await supabaseClient.from('front_page_settings').select('logo_url').eq('id',1).single();if(data&&data.logo_url){const img=document.getElementById('nav-logo-img'),txt=document.getElementById('nav-logo-text');img.src=data.logo_url;img.classList.remove('hidden');if(txt)txt.style.display='none';}}catch(e){}})();
 
-    if(isAdmin){const btn=document.getElementById('header-action-btn');if(btn){btn.textContent='ADMIN ✦';btn.onclick=()=>{window.location.href='admin-panel.html';};}}
+
 
     let _notifyTimer=null;
     function notify(text,icon="✨"){const box=document.getElementById('custom-alert');document.getElementById('alert-text').innerText=text;document.getElementById('alert-icon').innerText=icon;if(_notifyTimer){clearTimeout(_notifyTimer);_notifyTimer=null;}box.classList.remove('show');void box.offsetWidth;box.classList.add('show');_notifyTimer=setTimeout(()=>{box.classList.remove('show');_notifyTimer=null;},3000);}

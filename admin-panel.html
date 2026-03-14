@@ -853,22 +853,6 @@
             </div>
         </div>
 
-        <!-- Character Image -->
-        <div class="admin-panel">
-            <div class="panel-title">Buddy / Character Image (mascot on landing page)</div>
-            <div class="upload-zone">
-                <span class="upload-label">Upload Character PNG (transparent background recommended)</span>
-                <div id="char-preview" style="width:100%;height:180px;background:var(--grey);overflow:hidden;margin-bottom:8px;display:flex;align-items:center;justify-content:center;">
-                    <img id="char-preview-img" src="" alt="" class="hidden" style="max-height:170px;max-width:100%;object-fit:contain;">
-                    <span id="char-preview-placeholder">No character image yet</span>
-                </div>
-                <input type="file" id="char-input" accept="image/*" style="font-size:0.62rem;">
-                <div class="progress-bar-wrap hidden" id="char-progress-wrap">
-                    <div class="progress-bar-inner" id="char-progress-bar"></div>
-                </div>
-            </div>
-        </div>
-
         <!-- Social Links -->
         <div class="admin-panel">
             <div class="panel-title">Social Media Links</div>
@@ -1060,7 +1044,6 @@
     let fp = {
         logo_url:        null,
         hero_bg_url:     null,
-        character_url:   null,
         tiktok_url:      '',
         instagram_url:   '',
         facebook_url:    '',
@@ -1071,7 +1054,6 @@
 
     // Pending uploads
     let pendingHeroBg    = null;
-    let pendingCharacter = null;
     let pendingLogo      = null;
 
     // Gallery upload state
@@ -1174,13 +1156,6 @@
             document.getElementById('hero-bg-placeholder-label').style.display = 'none';
         }
 
-        // Character preview
-        if (fp.character_url) {
-            const img = document.getElementById('char-preview-img');
-            img.src = fp.character_url; img.classList.remove('hidden');
-            document.getElementById('char-preview-placeholder').style.display = 'none';
-        }
-
         // Social links
         document.getElementById('social-tiktok').value    = fp.tiktok_url    || '';
         document.getElementById('social-instagram').value = fp.instagram_url  || '';
@@ -1218,20 +1193,6 @@
             img.src = url; img.classList.remove('hidden');
             document.getElementById('hero-bg-placeholder-label').style.display = 'none';
             notify('Hero image uploaded!', '🖼️');
-        }
-        this.value = '';
-    });
-
-    /* Character upload */
-    document.getElementById('char-input').addEventListener('change', async function() {
-        const file = this.files[0]; if (!file) return;
-        const url = await uploadFile(file, BUCKET_FRONT, 'character', 'char-progress-bar', 'char-progress-wrap');
-        if (url) {
-            pendingCharacter = url;
-            const img = document.getElementById('char-preview-img');
-            img.src = url; img.classList.remove('hidden');
-            document.getElementById('char-preview-placeholder').style.display = 'none';
-            notify('Character image uploaded!', '🎨');
         }
         this.value = '';
     });
@@ -1318,7 +1279,6 @@
             id:              1,
             logo_url:        pendingLogo       || fp.logo_url        || null,
             hero_bg_url:     pendingHeroBg     || fp.hero_bg_url     || null,
-            character_url:   pendingCharacter  || fp.character_url   || null,
             tiktok_url:      document.getElementById('social-tiktok').value.trim()    || null,
             instagram_url:   document.getElementById('social-instagram').value.trim() || null,
             facebook_url:    document.getElementById('social-facebook').value.trim()  || null,

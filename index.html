@@ -17,7 +17,7 @@
             --danger:#e00000;
         }
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-        body{font-family:'Unbounded',sans-serif;background:var(--bg);color:var(--black);overflow-x:hidden;line-height:1.5;padding-top:80px;padding-bottom:60px;}
+        body{font-family:'Unbounded',sans-serif;background:var(--bg);color:var(--black);overflow-x:hidden;line-height:1.5;padding-top:0;padding-bottom:60px;}
         .hidden{display:none!important;}
         h1,h2,h3,.serif{font-family:'Fraunces',serif;font-style:italic;font-weight:400;}
 
@@ -64,14 +64,42 @@
         .carousel-dot{width:8px;height:8px;background:var(--grey);border:1.5px solid var(--black);cursor:pointer;transition:background 0.2s;}
         .carousel-dot.active{background:var(--black);}
 
+        /* COVER PHOTO */
+        .cover-photo-section{width:100%;height:560px;overflow:hidden;border-bottom:var(--border);position:relative;}
+        .cover-photo-img{width:100%;height:100%;object-fit:cover;display:block;}
+        .cover-photo-placeholder{width:100%;height:100%;background:var(--black);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-style:italic;color:rgba(255,255,255,0.2);font-size:1rem;}
+
+        /* HERO INTRO */
+        /* Desktop: text on left, photo on right */
+        .hero-intro{max-width:900px;margin:0 auto;padding:48px 24px 0;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:40px;}
+        .hero-photo-wrap{flex-shrink:0;width:220px;height:220px;overflow:hidden;background:var(--grey);}
+        .hero-photo-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+        .hero-photo-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:var(--text-muted);}
+        .hero-text{flex:1;order:-1;}
+        .hero-text .greeting{font-family:'Unbounded',sans-serif;font-weight:900;line-height:1.1;color:var(--black);margin-bottom:12px;text-transform:uppercase;letter-spacing:-1px;}
+        .hero-text .greeting .small-word{font-size:clamp(0.9rem,2.2vw,1.2rem);font-weight:700;display:block;letter-spacing:2px;}
+        .hero-text .greeting .big-word{font-size:clamp(2.8rem,7vw,4.5rem);font-weight:900;display:block;line-height:0.95;letter-spacing:-2px;}
+        .hero-text .sub{font-family:'Unbounded',sans-serif;font-size:0.6rem;font-weight:400;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);line-height:1.8;}
+
         /* THE WALL */
         .wall-section{margin-bottom:56px;}
-        .wall-feed{display:flex;flex-direction:column;gap:16px;max-height:600px;overflow-y:auto;padding-right:4px;}
-        .wall-feed::-webkit-scrollbar{width:4px;}
-        .wall-feed::-webkit-scrollbar-track{background:var(--grey);}
-        .wall-feed::-webkit-scrollbar-thumb{background:var(--black);}
-        .wall-tweet-wrap{border:var(--border);background:var(--white);box-shadow:4px 4px 0 var(--black);overflow:hidden;min-height:80px;display:flex;align-items:center;justify-content:center;padding:8px;}
+        .wall-panel{border:var(--border);box-shadow:var(--shadow-sm);background:var(--white);overflow:hidden;}
+        .wall-panel-inner{height:520px;overflow-y:auto;padding:16px;}
+        .wall-panel-inner::-webkit-scrollbar{width:5px;}
+        .wall-panel-inner::-webkit-scrollbar-track{background:var(--grey);}
+        .wall-panel-inner::-webkit-scrollbar-thumb{background:var(--black);}
+        .wall-feed{display:flex;flex-direction:column;gap:16px;}
+        .wall-tweet-wrap{border:2px solid var(--grey);background:var(--white);overflow:hidden;min-height:80px;display:flex;align-items:center;justify-content:center;padding:8px;}
         .wall-empty{font-family:'Fraunces',serif;font-style:italic;color:var(--text-muted);font-size:0.9rem;text-align:center;padding:40px 20px;border:2px dashed var(--grey);}
+
+        @media(max-width:767px){
+            .hero-intro{flex-direction:column;align-items:center;gap:24px;padding:32px 16px 0;}
+            .hero-photo-wrap{width:160px;height:160px;order:0;}
+            .hero-text{order:1;text-align:center;}
+            .wall-panel-inner{height:400px;}
+            .cover-photo-section{height:360px;}
+            .cover-photo-placeholder{height:360px;}
+        }
 
         /* TOAST */
         #custom-alert{position:fixed;bottom:32px;right:24px;background:var(--black);color:var(--white);padding:14px 22px;border:2px solid var(--accent);display:flex;align-items:center;gap:12px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;transform:translateY(calc(100% + 60px));opacity:0;pointer-events:none;transition:transform 0.45s var(--ease),opacity 0.45s ease;z-index:9999;box-shadow:5px 5px 0px var(--accent);max-width:320px;}
@@ -133,9 +161,26 @@
     </nav>
 </header>
 
-<div class="page-title-banner">
-    <div class="title-eyebrow">Hello, Welcome</div>
-    <div class="title-main"><em>Buddy</em></div>
+<!-- Cover Photo -->
+<div class="cover-photo-section" id="cover-photo-section">
+    <img id="cover-photo-img" class="cover-photo-img hidden" src="" alt="Cover">
+    <div id="cover-photo-placeholder" class="cover-photo-placeholder">No cover photo yet</div>
+</div>
+
+<!-- Hero Intro: 1:1 photo + welcome text -->
+<div class="hero-intro">
+    <div class="hero-photo-wrap" id="hero-square-wrap">
+        <img id="hero-square-img" src="" alt="" class="hidden">
+        <div id="hero-square-placeholder" class="hero-photo-placeholder">◎</div>
+    </div>
+    <div class="hero-text">
+        <div class="greeting">
+                <span class="small-word">Hello</span>
+                <span class="big-word">Buddy</span>
+                <span class="small-word">Welcome</span>
+            </div>
+        <div class="sub">i hope you find what you are looking for</div>
+    </div>
 </div>
 
 <div class="home-content">
@@ -175,8 +220,12 @@
     <!-- The Wall -->
     <div class="wall-section">
         <div class="section-label">The Wall</div>
-        <div class="wall-feed" id="wall-feed">
-            <div class="wall-empty">Reviews coming soon.</div>
+        <div class="wall-panel">
+            <div class="wall-panel-inner">
+                <div class="wall-feed" id="wall-feed">
+                    <div class="wall-empty">Reviews coming soon.</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -227,6 +276,10 @@
             if(settings.instagram_url) document.getElementById('link-instagram').href=settings.instagram_url;
             if(settings.facebook_url)  document.getElementById('link-facebook').href=settings.facebook_url;
             if(settings.twitter_url)   document.getElementById('link-twitter').href=settings.twitter_url;
+            // Cover photo
+            if(settings.hero_bg_url){const ci=document.getElementById('cover-photo-img'),cp=document.getElementById('cover-photo-placeholder');ci.src=settings.hero_bg_url;ci.classList.remove('hidden');if(cp)cp.style.display='none';}
+            // Hero square (character/mascot image reused as 1:1 photo)
+            if(settings.character_url){const si=document.getElementById('hero-square-img'),sp=document.getElementById('hero-square-placeholder');si.src=settings.character_url;si.classList.remove('hidden');if(sp)sp.style.display='none';}
             buildCarousel(settings.board_images||[]);
             buildWall(settings.wall_tweet_urls||[]);}}catch(err){console.error('Init error:',err);}}
     init();
