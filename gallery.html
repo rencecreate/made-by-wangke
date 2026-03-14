@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Gallery</title>
+    <title>RENCE CREATE | Gallery</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
     <style>
@@ -50,18 +50,17 @@
 
         /* GALLERY GRID */
         .gallery-container{max-width:1300px;margin:0 auto;padding:40px 24px;}
-        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:36px;}
+        /* CSS columns = masonry-like: images stack at their natural height, no gaps */
+        .gallery-grid{columns:3;column-gap:20px;}
+        .gallery-grid .photo-card{break-inside:avoid;margin-bottom:20px;width:100%;}
+        .gallery-empty{column-span:all;text-align:center;padding:80px 20px;}
 
         /* PHOTO CARD — flat, seamless, no border */
-        .photo-card{position:relative;background:var(--grey);padding:0;cursor:pointer;overflow:hidden;transition:transform 0.25s var(--ease),box-shadow 0.25s var(--ease);}
+        .photo-card{position:relative;background:transparent;padding:0;cursor:pointer;overflow:hidden;transition:transform 0.25s var(--ease),box-shadow 0.25s var(--ease);display:block;}
         .photo-card:hover{transform:translate(-6px,-6px);box-shadow:8px 8px 0px rgba(0,0,0,0.15);}
 
-        /* Aspect ratio variants */
-        .photo-card[data-ratio="1:1"] .photo-img{aspect-ratio:1/1;}
-        .photo-card[data-ratio="4:5"] .photo-img{aspect-ratio:4/5;}
-        .photo-card[data-ratio="5:4"] .photo-img{aspect-ratio:5/4;}
-
-        .photo-card .photo-img{width:100%;display:block;object-fit:cover;transition:transform 0.4s ease;}
+        /* No aspect-ratio enforcement — card height = image natural height */
+        .photo-card .photo-img{width:100%;height:auto;display:block;transition:transform 0.4s ease;}
         .photo-card:hover .photo-img{transform:scale(1.04);}
 
         /* Hover overlay rises from bottom */
@@ -130,14 +129,14 @@
             .folder-link{font-size:0.8rem;flex-shrink:0;white-space:nowrap;padding:10px 4px;}
 
             .gallery-container{padding:16px 16px 40px;}
-            .gallery-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
-            .photo-card{box-shadow:none!important;}
+            .gallery-grid{columns:2;column-gap:10px;}
+            .gallery-grid .photo-card{margin-bottom:10px;}
 
             #g-alert{bottom:calc(var(--tab-tot) + 12px);right:12px;left:12px;max-width:none;}
         }
 
         @media(max-width:374px){
-            .gallery-grid{grid-template-columns:1fr;gap:12px;}
+            .gallery-grid{columns:1;}
             .folder-link{font-size:0.72rem;}
         }
     </style>
@@ -159,7 +158,7 @@
 </header>
 
 <div class="page-title-banner">
-    <div class="title-eyebrow">Browse</div>
+    <div class="title-eyebrow">Browse our</div>
     <div class="title-main">The <em>Gallery</em></div>
 </div>
 
@@ -198,7 +197,7 @@
 
     function buildCategoryNav(posts){const nav=document.getElementById('folder-nav');nav.innerHTML='';const cats=['All',...[...new Set(posts.map(p=>p.category).filter(Boolean))].sort()];cats.forEach(cat=>{const btn=document.createElement('button');btn.className=`folder-link${currentCategory===cat?' active':''}`;btn.textContent=cat;btn.onclick=()=>{currentCategory=cat;document.querySelectorAll('.folder-link').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderGrid();};nav.appendChild(btn);});}
 
-    function renderGrid(){const grid=document.getElementById('gallery-grid');grid.innerHTML='';const filtered=currentCategory==='All'?posts:posts.filter(p=>p.category===currentCategory);if(!filtered.length){grid.innerHTML=`<div class="gallery-empty"><h2>${posts.length===0?'No posts yet':'Nothing here yet'}</h2><p>${posts.length===0?'Check back soon for new work.':'No posts in this category yet.'}</p></div>`;return;}const ratios=['1:1','4:5','5:4'];filtered.forEach((post,i)=>{const ratio=post.ratio||ratios[i%ratios.length];const card=document.createElement('div');card.className='photo-card';card.dataset.ratio=ratio;card.innerHTML=`<img class="photo-img" src="${post.image_url}" alt="${post.title||''}" loading="lazy"><div class="photo-overlay"><div class="overlay-title">${post.title||''}</div>${post.short_description?`<div class="overlay-desc">${post.short_description}</div>`:''}</div>${isAdmin?`<button class="photo-del-btn" onclick="deletePost(event,'${post.id}','${post.image_url}')">✕</button>`:''}`; card.addEventListener('touchstart',()=>{document.querySelectorAll('.photo-card.touch-active').forEach(c=>{if(c!==card)c.classList.remove('touch-active');});card.classList.toggle('touch-active');},{passive:true});grid.appendChild(card);});}
+    function renderGrid(){const grid=document.getElementById('gallery-grid');grid.innerHTML='';const filtered=currentCategory==='All'?posts:posts.filter(p=>p.category===currentCategory);if(!filtered.length){grid.innerHTML=`<div class="gallery-empty"><h2>${posts.length===0?'No posts yet':'Nothing here yet'}</h2><p>${posts.length===0?'Check back soon for new work.':'No posts in this category yet.'}</p></div>`;return;}filtered.forEach((post)=>{const card=document.createElement('div');card.className='photo-card';card.innerHTML=`<img class="photo-img" src="${post.image_url}" alt="${post.title||''}" loading="lazy"><div class="photo-overlay"><div class="overlay-title">${post.title||''}</div>${post.short_description?`<div class="overlay-desc">${post.short_description}</div>`:''}</div>${isAdmin?`<button class="photo-del-btn" onclick="deletePost(event,'${post.id}','${post.image_url}')">✕</button>`:''}`; card.addEventListener('touchstart',()=>{document.querySelectorAll('.photo-card.touch-active').forEach(c=>{if(c!==card)c.classList.remove('touch-active');});card.classList.toggle('touch-active');},{passive:true});grid.appendChild(card);});}
 
     async function deletePost(event,postId,imageUrl){event.stopPropagation();if(!confirm('Delete this post?'))return;const{error}=await sb.from('gallery_posts').delete().eq('id',postId);if(error){notify('Delete failed: '+error.message,'❌');return;}try{const ps=imageUrl.indexOf(`/${BUCKET}/`)+`/${BUCKET}/`.length;await sb.storage.from(BUCKET).remove([imageUrl.substring(ps)]);}catch(e){}posts=posts.filter(p=>String(p.id)!==String(postId));buildCategoryNav(posts);renderGrid();notify('Post deleted.','🗑️');}
 
