@@ -107,6 +107,8 @@
 
             .photo-card:hover{transform:none;box-shadow:none;}
             .photo-card:active{transform:translate(-4px,-4px);box-shadow:6px 6px 0px var(--black);transition:transform 0.1s ease;}
+            /* Hide admin delete button entirely on mobile — touch-active should never expose it */
+            .photo-del-btn{display:none!important;}
             button:hover{transform:none;box-shadow:none;}
             button:active{transform:translate(-2px,-2px);box-shadow:3px 3px 0px var(--accent);background:var(--accent);color:var(--black);}
             .folder-link:hover::after{width:0;}
@@ -127,6 +129,8 @@
             .folder-link{font-size:0.85rem;flex-shrink:0;white-space:nowrap;padding:10px 4px;}
 
             .gallery-container{padding:12px 12px 40px;}
+            /* Tighter column gap on mobile for the Pinterest look */
+            .gallery-grid{--mobile-gap:8px;}
 
             #g-alert{bottom:20px;right:12px;left:12px;max-width:none;}
         }
@@ -197,11 +201,15 @@
        Order is preserved (newest → oldest left-to-right across cols).
        Re-runs on window resize via debounce.
     ──────────────────────────────────────────────────────────────────────── */
-    const GAP = 14; // px between cards
+    const GAP = 14; // px between cards — overridden to 8px on mobile
+
+    function getGap() {
+        return window.innerWidth < 768 ? 8 : GAP;
+    }
 
     function getColCount() {
         const w = document.getElementById('gallery-grid').offsetWidth;
-        if (w < 480) return 1;
+        if (w < 480) return 2;
         if (w < 768) return 2;
         if (w < 1100) return 3;
         return 4;
@@ -214,7 +222,8 @@
 
         const totalW = grid.offsetWidth;
         const cols = getColCount();
-        const colW = (totalW - GAP * (cols - 1)) / cols;
+        const gap = getGap();
+        const colW = (totalW - gap * (cols - 1)) / cols;
         const colHeights = new Array(cols).fill(0);
 
         cards.forEach(card => {
@@ -222,8 +231,8 @@
             // Find shortest column
             const minH = Math.min(...colHeights);
             const col = colHeights.indexOf(minH);
-            const x = col * (colW + GAP);
-            const y = minH === 0 ? 0 : minH + GAP;
+            const x = col * (colW + gap);
+            const y = minH === 0 ? 0 : minH + gap;
             card.style.left = x + 'px';
             card.style.top  = y + 'px';
             colHeights[col] = y + card.offsetHeight;
