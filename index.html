@@ -368,7 +368,7 @@
     border-radius:50%;
     background:#ffffff;
     border:2.5px solid #000000;
-    box-shadow:4px 4px 0px #000000;
+    box-shadow:none;
     display:flex;flex-direction:column;
     align-items:center;justify-content:center;
     gap:2px;
@@ -410,7 +410,7 @@
 /* Hover / active */
 .fnav-btn:hover,.fnav-btn:active{
     background:#00ff66;
-    box-shadow:3px 3px 0px #000000;
+    box-shadow:none;
     transform:translate(-50%,-50%) scale(1.12) !important;
 }
 
@@ -496,7 +496,7 @@ const STORE_KEY = 'fnav_pos_v2';
 const EDGE_MARGIN   = 10;   // px from screen edge when snapped
 const TOP_DEADZONE  = 90;   // px from top  (avoids browser bar)
 const BOT_DEADZONE  = 90;   // px from bottom (avoids home gesture)
-const BTN_RADIUS    = 82;   // px  — arc radius for sub-buttons
+const BTN_RADIUS    = 72;   // px  — arc radius for sub-buttons
 const DRAG_THRESHOLD = 6;   // px movement before we treat it as drag
 
 /* ── Elements ── */
@@ -617,8 +617,8 @@ function positionButtons() {
     // Right edge → fan left  (angles: 150°, 180°, 210° from right)
     // Left edge  → fan right (angles:  30°,   0°, -30°)
     const baseAngles = onRight
-        ? [210, 180, 150]   // top-left, left, bottom-left
-        : [-30,   0,  30];  // top-right, right, bottom-right
+        ? [225, 180, 135]   // top-left, left, bottom-left
+        : [-45,   0,  45];  // top-right, right, bottom-right
 
     btns.forEach((btn, i) => {
         const rad = (baseAngles[i] * Math.PI) / 180;

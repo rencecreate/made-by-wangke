@@ -107,15 +107,13 @@
 
             .photo-card:hover{transform:none;box-shadow:none;}
             .photo-card:active{transform:translate(-4px,-4px);box-shadow:6px 6px 0px var(--black);transition:transform 0.1s ease;}
-            /* Hide admin delete button entirely on mobile — touch-active should never expose it */
-            .photo-del-btn{display:none!important;}
             button:hover{transform:none;box-shadow:none;}
             button:active{transform:translate(-2px,-2px);box-shadow:3px 3px 0px var(--accent);background:var(--accent);color:var(--black);}
             .folder-link:hover::after{width:0;}
             .folder-link.active::after,.folder-link:active::after{width:100%;}
 
-            /* Mobile overlay always slightly visible */
-            .photo-overlay{transform:translateY(65%);}
+            /* Mobile overlay fully hidden until tapped */
+            .photo-overlay{transform:translateY(110%);}
             .photo-card.touch-active .photo-overlay{transform:translateY(0);}
 
             button,a,[role="button"],.folder-link,.nav-btn{min-height:44px;}
@@ -129,8 +127,6 @@
             .folder-link{font-size:0.85rem;flex-shrink:0;white-space:nowrap;padding:10px 4px;}
 
             .gallery-container{padding:12px 12px 40px;}
-            /* Tighter column gap on mobile for the Pinterest look */
-            .gallery-grid{--mobile-gap:8px;}
 
             #g-alert{bottom:20px;right:12px;left:12px;max-width:none;}
         }
@@ -201,15 +197,11 @@
        Order is preserved (newest → oldest left-to-right across cols).
        Re-runs on window resize via debounce.
     ──────────────────────────────────────────────────────────────────────── */
-    const GAP = 14; // px between cards — overridden to 8px on mobile
-
-    function getGap() {
-        return window.innerWidth < 768 ? 8 : GAP;
-    }
+    const GAP = 14; // px between cards
 
     function getColCount() {
         const w = document.getElementById('gallery-grid').offsetWidth;
-        if (w < 480) return 2;
+        if (w < 480) return 1;
         if (w < 768) return 2;
         if (w < 1100) return 3;
         return 4;
@@ -222,8 +214,7 @@
 
         const totalW = grid.offsetWidth;
         const cols = getColCount();
-        const gap = getGap();
-        const colW = (totalW - gap * (cols - 1)) / cols;
+        const colW = (totalW - GAP * (cols - 1)) / cols;
         const colHeights = new Array(cols).fill(0);
 
         cards.forEach(card => {
@@ -231,8 +222,8 @@
             // Find shortest column
             const minH = Math.min(...colHeights);
             const col = colHeights.indexOf(minH);
-            const x = col * (colW + gap);
-            const y = minH === 0 ? 0 : minH + gap;
+            const x = col * (colW + GAP);
+            const y = minH === 0 ? 0 : minH + GAP;
             card.style.left = x + 'px';
             card.style.top  = y + 'px';
             colHeights[col] = y + card.offsetHeight;
@@ -373,7 +364,7 @@
     border-radius:50%;
     background:#ffffff;
     border:2.5px solid #000000;
-    box-shadow:4px 4px 0px #000000;
+    box-shadow:none;
     display:flex;flex-direction:column;
     align-items:center;justify-content:center;
     gap:2px;
@@ -415,7 +406,7 @@
 /* Hover / active */
 .fnav-btn:hover,.fnav-btn:active{
     background:#00ff66;
-    box-shadow:3px 3px 0px #000000;
+    box-shadow:none;
     transform:translate(-50%,-50%) scale(1.12) !important;
 }
 
@@ -501,7 +492,7 @@ const STORE_KEY = 'fnav_pos_v2';
 const EDGE_MARGIN   = 10;   // px from screen edge when snapped
 const TOP_DEADZONE  = 90;   // px from top  (avoids browser bar)
 const BOT_DEADZONE  = 90;   // px from bottom (avoids home gesture)
-const BTN_RADIUS    = 82;   // px  — arc radius for sub-buttons
+const BTN_RADIUS    = 72;   // px  — arc radius for sub-buttons
 const DRAG_THRESHOLD = 6;   // px movement before we treat it as drag
 
 /* ── Elements ── */
@@ -622,8 +613,8 @@ function positionButtons() {
     // Right edge → fan left  (angles: 150°, 180°, 210° from right)
     // Left edge  → fan right (angles:  30°,   0°, -30°)
     const baseAngles = onRight
-        ? [210, 180, 150]   // top-left, left, bottom-left
-        : [-30,   0,  30];  // top-right, right, bottom-right
+        ? [225, 180, 135]   // top-left, left, bottom-left
+        : [-45,   0,  45];  // top-right, right, bottom-right
 
     btns.forEach((btn, i) => {
         const rad = (baseAngles[i] * Math.PI) / 180;
