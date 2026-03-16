@@ -93,12 +93,16 @@
         .wall-empty{font-family:'Fraunces',serif;font-style:italic;color:var(--text-muted);font-size:0.9rem;text-align:center;padding:40px 20px;border:2px dashed var(--grey);}
 
         @media(max-width:767px){
-            .hero-intro{flex-direction:column;align-items:center;gap:24px;padding:32px 16px 0;}
-            .hero-photo-wrap{width:160px;height:160px;order:0;}
-            .hero-text{order:1;text-align:center;}
+            /* Keep hero side-by-side on mobile — text left, photo right */
+            .hero-intro{flex-direction:row;align-items:center;justify-content:space-between;gap:16px;padding:24px 16px 0;flex-wrap:nowrap;}
+            .hero-photo-wrap{width:110px;height:110px;flex-shrink:0;order:1;}
+            .hero-text{order:0;flex:1;text-align:left;}
+            .hero-text .greeting .big-word{font-size:clamp(2rem,11vw,3.2rem);}
+            .hero-text .greeting .small-word{font-size:clamp(0.6rem,2.5vw,0.9rem);}
+            .hero-text .sub{font-size:0.5rem;}
             .wall-panel-inner{height:400px;}
-            .cover-photo-section{height:360px;}
-            .cover-photo-placeholder{height:360px;}
+            .cover-photo-section{height:220px;}
+            .cover-photo-placeholder{height:220px;}
         }
 
         /* TOAST */
@@ -117,17 +121,14 @@
             :root{--tab-h:64px;--tab-safe:max(env(safe-area-inset-bottom,0px),8px);--tab-tot:calc(var(--tab-h) + var(--tab-safe));}
             html,body{-webkit-overflow-scrolling:touch;}
             *,*::before,*::after{box-sizing:border-box;}
-            body{padding-top:0!important;padding-bottom:calc(var(--tab-tot) + 20px)!important;}
+            body{padding-top:80px!important;padding-bottom:20px!important;}
             a,button,[role="button"]{-webkit-touch-callout:none;-webkit-tap-highlight-color:rgba(0,255,102,0.18);}
-            header{display:none!important;}
-
-            #mobile-tab-bar{display:flex!important;position:fixed;bottom:0;left:0;right:0;z-index:900;height:var(--tab-tot);padding-bottom:var(--tab-safe);background:rgba(255,255,255,0.97);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-top:3px solid var(--black);align-items:stretch;}
-            #mobile-tab-bar .tab-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-decoration:none;color:var(--black);font-family:'Unbounded',sans-serif;font-size:0.48rem;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;cursor:pointer;background:transparent;border:none;padding:0;min-height:44px;position:relative;transition:color 0.15s ease,background 0.15s ease;-webkit-tap-highlight-color:transparent;}
-            #mobile-tab-bar .tab-item .tab-icon{font-size:1.3rem;line-height:1;display:block;transition:transform 0.18s ease;}
-            #mobile-tab-bar .tab-item .tab-label{display:block;line-height:1;}
-            #mobile-tab-bar .tab-item.active::after{content:'';position:absolute;top:0;left:20%;right:20%;height:3px;background:var(--accent);}
-            #mobile-tab-bar .tab-item.active .tab-icon{transform:translateY(-2px) scale(1.12);}
-            #mobile-tab-bar .tab-item:active{background:rgba(0,255,102,0.12);}
+            /* Mobile header — visible, logo centered, no nav buttons */
+            header{display:flex!important;justify-content:center;padding:10px 20px;top:10px;left:10px;right:10px;}
+            .header-nav{display:none!important;}
+            .logo{font-size:1.1rem;}
+            .logo img{height:28px!important;}
+            #mobile-tab-bar{display:none!important;}
 
             button:hover{transform:none;box-shadow:none;}
             button:active{transform:translate(-2px,-2px);box-shadow:3px 3px 0px var(--accent);background:var(--accent);color:var(--black);}
@@ -135,13 +136,18 @@
             .carousel-btn:active{background:var(--accent);color:var(--black);transform:translateY(-50%) scale(0.92);}
 
             button,a,[role="button"],.nav-btn,.social-btn{min-height:44px;}
-            .social-btn{width:48px;height:48px;}
+            .social-btn{width:44px;height:44px;}
 
             .page-title-banner{padding:24px 16px 0;}
             .page-title-banner .title-main{font-size:clamp(1.8rem,8vw,2.6rem);}
-            .home-content{padding:24px 16px;}
+            .home-content{padding:16px 16px;}
+            .social-section{margin-bottom:28px;}
+            .social-btns{gap:8px;}
+            .social-btn{width:44px;height:44px;}
+            .board-section{margin-bottom:32px;}
+            .wall-section{margin-bottom:32px;}
             .wall-feed{max-height:480px;}
-            #custom-alert{bottom:calc(var(--tab-tot) + 12px);right:12px;left:12px;max-width:none;}
+            #custom-alert{bottom:20px;right:12px;left:12px;max-width:none;}
         }
     </style>
 </head>
@@ -284,5 +290,461 @@
             buildWall(settings.wall_tweet_urls||[]);}}catch(err){console.error('Init error:',err);}}
     init();
 </script>
+<!-- ============================================================
+     FLOATING NAV — mobile-only draggable launcher
+     Drop this block right before </body> on every page.
+     Edit FNAV_CONFIG to customise icon src & page links.
+============================================================ -->
+
+<!-- inject into <head> or keep inline — purely CSS, no deps -->
+<style>
+/* ── FLOATING NAV ─────────────────────────────────────── */
+#fnav-wrap{
+    display:none;   /* hidden on desktop */
+    position:fixed;
+    z-index:10000;
+    touch-action:none;
+    user-select:none;
+    -webkit-user-select:none;
+}
+@media(max-width:767px){
+    #fnav-wrap{ display:block; }
+}
+
+/* Main trigger button */
+#fnav-trigger{
+    width:58px;height:58px;
+    border-radius:50%;
+    background:transparent;
+    border:none;
+    box-shadow:none;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    opacity:0.52;
+    transition:opacity 0.25s ease,
+               transform  0.18s cubic-bezier(0.34,1.56,0.64,1);
+    position:relative;
+    z-index:2;
+    will-change:transform;
+}
+#fnav-trigger.active,
+#fnav-trigger:active{
+    opacity:1;
+    transform:scale(1.1);
+}
+#fnav-trigger img{
+    width:58px;height:58px;
+    object-fit:contain;
+    border-radius:0;
+    pointer-events:none;
+    display:block;
+}
+/* Subtle drop-shadow pulse — works on any transparent icon */
+#fnav-trigger::after{
+    content:'';
+    position:absolute;inset:0;
+    border-radius:50%;
+    background:transparent;
+    box-shadow:0 0 0 0 rgba(0,255,102,0.5);
+    animation:fnav-pulse 3s ease-in-out infinite;
+    pointer-events:none;
+}
+@keyframes fnav-pulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(0,255,102,0.45);}
+    50%{box-shadow:0 0 0 10px rgba(0,255,102,0);}
+}
+
+/* Sub-buttons container */
+#fnav-buttons{
+    position:absolute;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+}
+/* Individual sub-button */
+.fnav-btn{
+    position:absolute;
+    width:52px;height:52px;
+    border-radius:50%;
+    background:#ffffff;
+    border:2.5px solid #000000;
+    box-shadow:4px 4px 0px #000000;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:2px;
+    text-decoration:none;
+    color:#000000;
+    font-family:'Unbounded',sans-serif;
+    font-size:0.36rem;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:0.3px;
+    cursor:pointer;
+    opacity:0;
+    pointer-events:none;
+    transform:translate(-50%,-50%) scale(0.4);
+    transition:
+        transform 0.42s cubic-bezier(0.34,1.56,0.64,1),
+        opacity   0.32s ease,
+        background 0.18s ease,
+        box-shadow 0.18s ease;
+    will-change:transform,opacity;
+    -webkit-tap-highlight-color:transparent;
+}
+.fnav-btn svg{
+    width:18px;height:18px;
+    flex-shrink:0;
+    pointer-events:none;
+    transition:transform 0.2s ease;
+}
+/* Staggered delays so buttons cascade out */
+.fnav-btn:nth-child(1){ transition-delay:0s,    0s,    0s, 0s; }
+.fnav-btn:nth-child(2){ transition-delay:0.06s, 0.06s, 0s, 0s; }
+.fnav-btn:nth-child(3){ transition-delay:0.12s, 0.12s, 0s, 0s; }
+
+/* Open state */
+#fnav-wrap.open .fnav-btn{
+    opacity:1;
+    pointer-events:auto;
+}
+/* Hover / active */
+.fnav-btn:hover,.fnav-btn:active{
+    background:#00ff66;
+    box-shadow:3px 3px 0px #000000;
+    transform:translate(-50%,-50%) scale(1.12) !important;
+}
+
+/* Active-page indicator dot */
+.fnav-btn.current-page{
+    background:#00ff66;
+    border-color:#000;
+}
+
+/* Backdrop dim when open */
+#fnav-backdrop{
+    display:none;
+    position:fixed;inset:0;
+    z-index:9999;
+    background:rgba(0,0,0,0);
+    transition:background 0.3s ease;
+}
+#fnav-wrap.open ~ #fnav-backdrop,
+#fnav-backdrop.visible{
+    display:block;
+    background:rgba(0,0,0,0.28);
+}
+/* ── END FLOATING NAV CSS ─────────────────────────────── */
+</style>
+
+<!-- Backdrop (sibling of wrap so z-index layering works) -->
+<div id="fnav-backdrop"></div>
+
+<!-- The widget itself -->
+<div id="fnav-wrap">
+    <div id="fnav-trigger" aria-label="Navigation menu" role="button" tabindex="0">
+        <img id="fnav-icon-img" src="" alt="Nav">
+        <!-- Fallback SVG shown when no custom icon is set -->
+        <svg id="fnav-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#00ff66" stroke-width="2.2" stroke-linecap="round">
+            <line x1="3" y1="6"  x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+    </div>
+    <div id="fnav-buttons">
+        <!-- populated by JS from config -->
+    </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══════════════════════════════════════════════════════════════
+   CONFIG — edit these to customise the floating nav
+   iconSrc : URL to the main trigger image (leave '' for default SVG)
+   pages   : the 3 nav destinations
+   activePage : set to the filename of the current page (auto-detected below)
+═══════════════════════════════════════════════════════════════ */
+const FNAV_CONFIG = {
+    iconSrc : '',           // e.g. 'https://…/icon.png'  — set from admin panel
+    pages: [
+        {
+            label : 'Home',
+            href  : 'index.html',
+            svg   : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>'
+        },
+        {
+            label : 'Gallery',
+            href  : 'gallery.html',
+            svg   : '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>'
+        },
+        {
+            label : 'Shop',
+            href  : 'main-shop.html',
+            svg   : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'
+        }
+    ]
+};
+
+/* ── Auto-detect current page for active highlight ── */
+const currentFile = window.location.pathname.split('/').pop() || 'index.html';
+
+/* ── Storage key for persisted position ── */
+const STORE_KEY = 'fnav_pos_v2';
+
+/* ── Constants ── */
+const EDGE_MARGIN   = 10;   // px from screen edge when snapped
+const TOP_DEADZONE  = 90;   // px from top  (avoids browser bar)
+const BOT_DEADZONE  = 90;   // px from bottom (avoids home gesture)
+const BTN_RADIUS    = 82;   // px  — arc radius for sub-buttons
+const DRAG_THRESHOLD = 6;   // px movement before we treat it as drag
+
+/* ── Elements ── */
+const wrap      = document.getElementById('fnav-wrap');
+const trigger   = document.getElementById('fnav-trigger');
+const btnWrap   = document.getElementById('fnav-buttons');
+const backdrop  = document.getElementById('fnav-backdrop');
+const iconImg   = document.getElementById('fnav-icon-img');
+const iconSvg   = document.getElementById('fnav-icon-svg');
+
+/* ── Apply icon: config override first, then Supabase, then default SVG ── */
+function applyFnavIcon(src) {
+    if (src) {
+        iconImg.src = src;
+        iconImg.style.display = 'block';
+        iconSvg.style.display = 'none';
+    } else {
+        iconImg.style.display = 'none';
+        iconSvg.style.display = 'block';
+        iconSvg.style.width  = '42px';
+        iconSvg.style.height = '42px';
+    }
+}
+
+// Apply immediately from config (may be empty)
+applyFnavIcon(FNAV_CONFIG.iconSrc);
+
+// Then try to fetch from Supabase front_page_settings
+(async function loadFnavIcon() {
+    try {
+        const cached = localStorage.getItem('fnav_icon_url');
+        if (cached) { applyFnavIcon(cached); FNAV_CONFIG.iconSrc = cached; }
+        const { data: _fpd } = await sb.from('front_page_settings').select('fnav_icon_url').eq('id',1).single();
+        if (_fpd && _fpd.fnav_icon_url) {
+            applyFnavIcon(_fpd.fnav_icon_url);
+            FNAV_CONFIG.iconSrc = _fpd.fnav_icon_url;
+            localStorage.setItem('fnav_icon_url', _fpd.fnav_icon_url);
+        }
+    } catch(e) {}
+})();
+
+/* ── Build sub-buttons ── */
+FNAV_CONFIG.pages.forEach(page => {
+    const a = document.createElement('a');
+    a.className = 'fnav-btn' + (page.href === currentFile ? ' current-page' : '');
+    a.href  = page.href;
+    a.setAttribute('aria-label', page.label);
+    a.innerHTML = page.svg +
+        `<span style="font-family:'Unbounded',sans-serif;font-size:0.33rem;font-weight:900;
+         text-transform:uppercase;letter-spacing:0.4px;line-height:1;margin-top:1px;
+         pointer-events:none;">${page.label}</span>`;
+    btnWrap.appendChild(a);
+});
+
+/* ── Position state ── */
+let posX, posY;
+let isOpen   = false;
+let isDragging = false;
+let onRight  = true;  // which edge the icon is snapped to
+
+function clampY(y) {
+    const h = window.innerHeight;
+    const half = 29; // ~half trigger height
+    return Math.max(TOP_DEADZONE + half, Math.min(h - BOT_DEADZONE - half, y));
+}
+
+function applyPos(x, y, animate) {
+    wrap.style.transition = animate
+        ? 'left 0.38s cubic-bezier(0.34,1.56,0.64,1), top 0.38s cubic-bezier(0.34,1.56,0.64,1)'
+        : 'none';
+    wrap.style.left = x + 'px';
+    wrap.style.top  = y + 'px';
+}
+
+function snapToEdge(animate) {
+    const w    = window.innerWidth;
+    const half = 29;
+    const midX = posX + half;
+    onRight = midX > w / 2;
+    posX = onRight ? w - EDGE_MARGIN - 58 : EDGE_MARGIN;
+    posY = clampY(posY);
+    applyPos(posX, posY, animate);
+    savePos();
+    positionButtons();
+}
+
+function savePos() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ x: posX, y: posY, right: onRight })); }
+    catch(e) {}
+}
+
+function loadPos() {
+    try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (raw) {
+            const d = JSON.parse(raw);
+            posX   = d.x;
+            posY   = clampY(d.y);
+            onRight = d.right !== false;
+            applyPos(posX, posY, false);
+            positionButtons();
+            return;
+        }
+    } catch(e) {}
+    // Default: right edge, 40% down
+    posX   = window.innerWidth - EDGE_MARGIN - 58;
+    posY   = clampY(window.innerHeight * 0.42);
+    onRight = true;
+    applyPos(posX, posY, false);
+    positionButtons();
+}
+
+/* ── Fan-out positions for sub-buttons ── */
+function positionButtons() {
+    const btns = btnWrap.querySelectorAll('.fnav-btn');
+    const count = btns.length;
+    // Angles: fan toward center of screen
+    // Right edge → fan left  (angles: 150°, 180°, 210° from right)
+    // Left edge  → fan right (angles:  30°,   0°, -30°)
+    const baseAngles = onRight
+        ? [210, 180, 150]   // top-left, left, bottom-left
+        : [-30,   0,  30];  // top-right, right, bottom-right
+
+    btns.forEach((btn, i) => {
+        const rad = (baseAngles[i] * Math.PI) / 180;
+        const bx  = Math.cos(rad) * BTN_RADIUS;
+        const by  = Math.sin(rad) * BTN_RADIUS;
+        // transform-origin is center of trigger (50%,50% of #fnav-buttons which is centered)
+        if (isOpen) {
+            btn.style.transform = `translate(calc(-50% + ${bx}px), calc(-50% + ${by}px)) scale(1)`;
+        } else {
+            btn.style.transform = `translate(-50%, -50%) scale(0.4)`;
+        }
+    });
+}
+
+/* ── Open / close ── */
+function openMenu() {
+    isOpen = true;
+    wrap.classList.add('open');
+    trigger.classList.add('active');
+    backdrop.classList.add('visible');
+    positionButtons();
+}
+
+function closeMenu() {
+    isOpen = false;
+    wrap.classList.remove('open');
+    trigger.classList.remove('active');
+    backdrop.classList.remove('visible');
+    positionButtons();
+}
+
+function toggleMenu() {
+    isOpen ? closeMenu() : openMenu();
+}
+
+/* ── Drag logic ── */
+let dragStartX = 0, dragStartY = 0;
+let dragOriginX = 0, dragOriginY = 0;
+let hasMoved = false;
+
+trigger.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    dragStartX  = t.clientX;
+    dragStartY  = t.clientY;
+    dragOriginX = posX;
+    dragOriginY = posY;
+    hasMoved    = false;
+    isDragging  = false;
+    trigger.classList.add('active');
+    wrap.style.transition = 'none';
+    // pause pulse
+    trigger.style.setProperty('--fnav-pulse-play', 'paused');
+    e.stopPropagation();
+}, { passive: true });
+
+trigger.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    const dx = t.clientX - dragStartX;
+    const dy = t.clientY - dragStartY;
+
+    if (!isDragging && (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD)) {
+        isDragging = true;
+        if (isOpen) closeMenu();
+    }
+    if (!isDragging) return;
+
+    hasMoved = true;
+    posX = dragOriginX + dx;
+    posY = clampY(dragOriginY + dy);
+    applyPos(posX, posY, false);
+    positionButtons();
+    e.preventDefault();
+}, { passive: false });
+
+trigger.addEventListener('touchend', e => {
+    trigger.classList.remove('active');
+    trigger.style.removeProperty('--fnav-pulse-play');
+
+    if (isDragging) {
+        snapToEdge(true);
+        isDragging = false;
+        hasMoved   = false;
+        // block the tap-to-open that would fire on touchend after drag
+        e.preventDefault();
+    } else {
+        toggleMenu();
+    }
+}, { passive: false });
+
+/* ── Keyboard accessibility ── */
+trigger.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMenu(); }
+});
+
+/* ── Close on backdrop tap ── */
+backdrop.addEventListener('click', closeMenu);
+backdrop.addEventListener('touchend', e => { e.preventDefault(); closeMenu(); }, { passive: false });
+
+/* ── Close when a sub-button is tapped ── */
+btnWrap.querySelectorAll('.fnav-btn').forEach(btn => {
+    btn.addEventListener('touchend', () => { setTimeout(closeMenu, 80); }, { passive: true });
+});
+
+/* ── Re-snap on orientation / resize ── */
+window.addEventListener('resize', () => {
+    posY = clampY(posY);
+    snapToEdge(false);
+});
+
+/* ── Init ── */
+loadPos();
+
+/* ── Expose update hook for admin panel integration ── */
+window.fnavSetIcon = function(src) {
+    FNAV_CONFIG.iconSrc = src;
+    applyFnavIcon(src);
+    // Persist so all other pages pick it up from cache
+    try {
+        if (src) localStorage.setItem('fnav_icon_url', src);
+        else localStorage.removeItem('fnav_icon_url');
+    } catch(e) {}
+};
+
+})();
+</script>
+<!-- ============ END FLOATING NAV ============ -->
+
 </body>
 </html>
