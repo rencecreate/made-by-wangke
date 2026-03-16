@@ -74,6 +74,7 @@
         /* Admin delete button */
         .photo-del-btn{position:absolute;top:8px;right:8px;width:28px;height:28px;background:var(--black);color:var(--accent);border:none;font-size:0.75rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;opacity:0;transition:opacity 0.2s;padding:0;}
         .photo-card:hover .photo-del-btn{opacity:1;}
+        .photo-card.touch-active .photo-del-btn{opacity:0!important;pointer-events:none!important;}
         .photo-del-btn:hover{background:var(--danger);color:var(--white);transform:none;box-shadow:none;}
 
         .gallery-empty{grid-column:1/-1;text-align:center;padding:80px 20px;}
@@ -107,6 +108,7 @@
 
             .photo-card:hover{transform:none;box-shadow:none;}
             .photo-card:active{transform:translate(-4px,-4px);box-shadow:6px 6px 0px var(--black);transition:transform 0.1s ease;}
+            .photo-del-btn{display:none!important;}
             button:hover{transform:none;box-shadow:none;}
             button:active{transform:translate(-2px,-2px);box-shadow:3px 3px 0px var(--accent);background:var(--accent);color:var(--black);}
             .folder-link:hover::after{width:0;}
@@ -197,11 +199,15 @@
        Order is preserved (newest → oldest left-to-right across cols).
        Re-runs on window resize via debounce.
     ──────────────────────────────────────────────────────────────────────── */
-    const GAP = 14; // px between cards
+    const GAP = 14; // px between cards — overridden to 8px on mobile
+
+    function getGap() {
+        return window.innerWidth < 768 ? 8 : GAP;
+    }
 
     function getColCount() {
         const w = document.getElementById('gallery-grid').offsetWidth;
-        if (w < 480) return 1;
+        if (w < 480) return 2;
         if (w < 768) return 2;
         if (w < 1100) return 3;
         return 4;
@@ -214,7 +220,8 @@
 
         const totalW = grid.offsetWidth;
         const cols = getColCount();
-        const colW = (totalW - GAP * (cols - 1)) / cols;
+        const gap = getGap();
+        const colW = (totalW - gap * (cols - 1)) / cols;
         const colHeights = new Array(cols).fill(0);
 
         cards.forEach(card => {
@@ -222,8 +229,8 @@
             // Find shortest column
             const minH = Math.min(...colHeights);
             const col = colHeights.indexOf(minH);
-            const x = col * (colW + GAP);
-            const y = minH === 0 ? 0 : minH + GAP;
+            const x = col * (colW + gap);
+            const y = minH === 0 ? 0 : minH + gap;
             card.style.left = x + 'px';
             card.style.top  = y + 'px';
             colHeights[col] = y + card.offsetHeight;
